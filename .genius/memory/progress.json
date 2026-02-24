@@ -1,0 +1,15 @@
+[
+  {
+    "id": "evt-1771228763564201000-qmuieq98810",
+    "type": "milestone",
+    "timestamp": "2026-02-16T07:59:23Z",
+    "session_id": "20260216-default",
+    "skill": null,
+    "phase": "NOT_STARTED",
+    "content": "Memory capture system operational",
+    "metadata": {},
+    "tags": [
+      "milestone"
+    ]
+  }
+]

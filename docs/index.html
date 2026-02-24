@@ -1,0 +1,1560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Genius Team — Your AI Product Team</title>
+<meta name="description" content="Open-source starter kit for multi-agent AI teams with Claude Code. From idea to production.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a0f;--bg2:#12121a;--bg3:#1a1a2e;--bg4:#16213e;
+  --text:#e2e8f0;--text2:#94a3b8;--text3:#64748b;
+  --purple:#7c3aed;--blue:#3b82f6;--cyan:#06b6d4;--pink:#ec4899;
+  --grad:linear-gradient(135deg,#7c3aed,#3b82f6);
+  --grad2:linear-gradient(135deg,#7c3aed 0%,#3b82f6 50%,#06b6d4 100%);
+  --radius:12px;--radius-lg:20px;
+}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+code,pre{font-family:'JetBrains Mono','Fira Code',monospace}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2rem;backdrop-filter:blur(20px);background:rgba(10,10,15,.8);border-bottom:1px solid rgba(124,58,237,.1);transition:all .3s}
+nav .nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+nav .logo{font-weight:800;font-size:1.2rem;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+nav .nav-links{display:flex;gap:2rem;align-items:center}
+nav .nav-links a{font-size:.875rem;color:var(--text2);transition:color .2s}
+nav .nav-links a:hover{color:var(--text)}
+.nav-cta{padding:.5rem 1.25rem;border-radius:8px;background:var(--grad);color:#fff!important;font-weight:600;font-size:.875rem;-webkit-text-fill-color:#fff!important;transition:opacity .2s}
+.nav-cta:hover{opacity:.9}
+.mobile-toggle{display:none;background:none;border:none;color:var(--text);font-size:1.5rem;cursor:pointer}
+
+/* UPDATE BANNER */
+.update-banner{position:fixed;top:60px;left:0;right:0;z-index:99;background:linear-gradient(135deg,#7c3aed 0%,#3b82f6 50%,#06b6d4 100%);padding:.75rem 1rem;display:flex;justify-content:center;transition:transform .3s ease,opacity .3s ease}
+.update-banner.hidden{transform:translateY(-100%);opacity:0;pointer-events:none}
+.banner-content{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;justify-content:center;max-width:1200px}
+.banner-badge{background:rgba(255,255,255,.2);padding:.25rem .6rem;border-radius:6px;font-size:.7rem;font-weight:700;color:#fff}
+.banner-text{color:#fff;font-size:.9rem}
+.banner-features{color:rgba(255,255,255,.85);font-size:.8rem;display:none}
+.banner-link{color:#fff;font-weight:600;font-size:.85rem;text-decoration:underline;text-underline-offset:2px}
+.banner-link:hover{opacity:.9}
+.banner-close{background:none;border:none;color:#fff;font-size:1.25rem;cursor:pointer;padding:0 .5rem;opacity:.8;transition:opacity .2s}
+.banner-close:hover{opacity:1}
+@media(min-width:768px){.banner-features{display:inline}}
+
+/* SECTIONS */
+section{padding:6rem 2rem}
+.container{max-width:1100px;margin:0 auto}
+.section-label{font-size:.75rem;text-transform:uppercase;letter-spacing:3px;color:var(--purple);font-weight:600;margin-bottom:.75rem}
+.section-title{font-size:clamp(1.75rem,4vw,2.5rem);font-weight:800;margin-bottom:1rem;line-height:1.2}
+.section-sub{color:var(--text2);font-size:1.05rem;max-width:650px;margin-bottom:3rem}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;position:relative;padding-top:140px}
+.hero::before{content:'';position:absolute;top:-20%;left:50%;transform:translateX(-50%);width:800px;height:800px;background:radial-gradient(circle,rgba(124,58,237,.15) 0%,rgba(59,130,246,.08) 40%,transparent 70%);pointer-events:none}
+.hero-badge{display:inline-flex;align-items:center;gap:.5rem;padding:.5rem 1rem;border-radius:100px;background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.3);font-size:.8rem;color:var(--purple);font-weight:500;margin-bottom:2rem}
+.hero h1{font-size:clamp(2.5rem,7vw,4.5rem);font-weight:800;line-height:1.05;margin-bottom:1.5rem;letter-spacing:-.02em}
+.hero h1 .grad{background:var(--grad2);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{font-size:clamp(1.1rem,2vw,1.35rem);color:var(--text2);max-width:600px;margin:0 auto 2.5rem}
+.hero-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.85rem 2rem;border-radius:10px;font-weight:600;font-size:1rem;transition:all .25s;cursor:pointer;border:none}
+.btn-primary{background:var(--grad);color:#fff;box-shadow:0 4px 25px rgba(124,58,237,.35)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 35px rgba(124,58,237,.5)}
+.btn-secondary{background:rgba(255,255,255,.06);color:var(--text);border:1px solid rgba(255,255,255,.1)}
+.btn-secondary:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2)}
+.hero-terminal{margin-top:4rem;max-width:600px;margin-left:auto;margin-right:auto;text-align:left;background:var(--bg2);border-radius:var(--radius);border:1px solid rgba(255,255,255,.06);overflow:hidden}
+.terminal-bar{padding:.6rem 1rem;background:rgba(255,255,255,.03);display:flex;gap:.4rem;align-items:center}
+.terminal-dot{width:10px;height:10px;border-radius:50%}
+.terminal-bar span:nth-child(1){background:#ff5f56}.terminal-bar span:nth-child(2){background:#ffbd2e}.terminal-bar span:nth-child(3){background:#27c93f}
+.terminal-body{padding:1.25rem;font-size:.85rem;color:var(--text2);line-height:1.8}
+.terminal-body .prompt{color:var(--cyan)}
+.terminal-body .cmd{color:var(--text)}
+
+/* PIPELINE */
+.pipeline{display:flex;flex-wrap:wrap;justify-content:center;gap:.75rem;margin-top:2rem}
+.pipeline-step{display:flex;align-items:center;gap:.4rem;padding:.5rem 1rem;border-radius:100px;background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.15);font-size:.8rem;font-weight:500;color:var(--text2);transition:all .3s}
+.pipeline-step:hover{background:rgba(124,58,237,.15);color:var(--text);transform:translateY(-2px)}
+.pipeline-arrow{color:var(--text3);font-size:.7rem}
+
+/* CARDS GRID */
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.5rem}
+.card{background:var(--bg2);border:1px solid rgba(255,255,255,.06);border-radius:var(--radius-lg);padding:2rem;transition:all .35s;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--grad);opacity:0;transition:opacity .3s}
+.card:hover{transform:translateY(-4px);border-color:rgba(124,58,237,.25);box-shadow:0 12px 40px rgba(0,0,0,.4)}
+.card:hover::before{opacity:1}
+.card-icon{font-size:2rem;margin-bottom:1rem;display:block}
+.card h3{font-size:1.1rem;font-weight:700;margin-bottom:.5rem}
+.card p{color:var(--text2);font-size:.9rem;line-height:1.6}
+.card .badge{display:inline-block;padding:.2rem .6rem;border-radius:6px;font-size:.7rem;font-weight:600;margin-bottom:.75rem}
+.badge-default{background:rgba(124,58,237,.15);color:#a78bfa}
+.badge-ide{background:rgba(59,130,246,.15);color:#60a5fa}
+.badge-omni{background:rgba(6,182,212,.15);color:#22d3ee}
+.badge-dual{background:rgba(236,72,153,.15);color:#f472b6}
+
+/* CODE BLOCK */
+.code-block{position:relative;background:#0d1117;border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);overflow:hidden;margin-bottom:1.5rem}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:.6rem 1rem;background:rgba(255,255,255,.03);border-bottom:1px solid rgba(255,255,255,.06)}
+.code-lang{font-size:.7rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;font-weight:600}
+.prereq-box{background:rgba(139,92,246,.08);border:1px solid rgba(139,92,246,.25);border-radius:var(--radius);padding:1.5rem;margin-bottom:2rem}
+.prereq-title{font-weight:600;font-size:1rem;margin-bottom:1rem;color:var(--text)}
+.prereq-link{display:inline-block;color:var(--accent);font-size:.9rem;font-weight:500;text-decoration:none;transition:opacity .2s}
+.prereq-link:hover{opacity:.8;text-decoration:underline}
+.mode-tabs{display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap}
+.mode-tab{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:var(--text3);padding:.4rem 1.2rem;border-radius:8px;font-size:.8rem;cursor:pointer;font-family:'Inter',sans-serif;font-weight:500;transition:all .2s}
+.mode-tab:hover{background:rgba(255,255,255,.08);color:var(--text)}
+.mode-tab.active{background:linear-gradient(135deg,rgba(139,92,246,.3),rgba(59,130,246,.3));border-color:rgba(139,92,246,.5);color:#fff}
+.copy-btn{background:none;border:1px solid rgba(255,255,255,.1);color:var(--text3);padding:.3rem .7rem;border-radius:6px;font-size:.7rem;cursor:pointer;font-family:'JetBrains Mono',monospace;transition:all .2s}
+.copy-btn:hover{background:rgba(255,255,255,.06);color:var(--text)}
+.copy-btn.copied{color:#22c55e;border-color:rgba(34,197,94,.3)}
+.code-block pre{padding:1.25rem;overflow-x:auto;font-size:.85rem;line-height:1.7;color:#c9d1d9}
+.code-block .comment{color:#8b949e}
+.code-block .string{color:#a5d6ff}
+.code-block .flag{color:#d2a8ff}
+
+/* PROJECT NAME INPUT */
+.project-name-input{background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.2);border-radius:var(--radius);padding:1.25rem;margin-bottom:1.5rem}
+.project-name-input label{display:block;font-size:.9rem;font-weight:600;margin-bottom:.75rem;color:var(--text)}
+.project-name-input input{width:100%;max-width:300px;padding:.75rem 1rem;border-radius:8px;border:1px solid rgba(255,255,255,.15);background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.9rem;transition:border-color .2s}
+.project-name-input input:focus{outline:none;border-color:var(--purple)}
+.project-name-input input::placeholder{color:var(--text3)}
+
+/* STEP INDICATOR */
+.step-indicator{display:flex;align-items:center;gap:.5rem;margin-bottom:1.5rem}
+.step-number{width:28px;height:28px;border-radius:50%;background:var(--grad);color:#fff;font-size:.8rem;font-weight:700;display:flex;align-items:center;justify-content:center}
+.step-title{font-size:1rem;font-weight:600;color:var(--text)}
+
+/* COLLAPSIBLE */
+.collapsible{margin-top:1.5rem}
+.collapsible-toggle{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:.75rem 1rem;width:100%;text-align:left;color:var(--text2);font-size:.85rem;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:all .2s}
+.collapsible-toggle:hover{background:rgba(255,255,255,.05);color:var(--text)}
+.collapsible-toggle .arrow{transition:transform .2s}
+.collapsible-toggle.open .arrow{transform:rotate(180deg)}
+.collapsible-content{max-height:0;overflow:hidden;transition:max-height .3s ease}
+.collapsible-content.open{max-height:500px}
+
+/* SKILLS GRID */
+.skills-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.75rem}
+.skill-item{display:flex;align-items:center;gap:.75rem;padding:.85rem 1rem;background:var(--bg2);border:1px solid rgba(255,255,255,.05);border-radius:10px;font-size:.85rem;transition:all .3s}
+.skill-item:hover{border-color:rgba(124,58,237,.2);background:rgba(124,58,237,.05)}
+.skill-icon{font-size:1.1rem;width:28px;text-align:center;flex-shrink:0}
+.skill-name{font-weight:500}
+
+/* FEATURES */
+.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2rem}
+.feature{padding:2rem;border-radius:var(--radius-lg);background:linear-gradient(135deg,rgba(124,58,237,.05),rgba(59,130,246,.03));border:1px solid rgba(255,255,255,.05)}
+.feature h3{font-size:1.15rem;font-weight:700;margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem}
+.feature p{color:var(--text2);font-size:.9rem}
+.feature ul{list-style:none;margin-top:.75rem}
+.feature li{color:var(--text2);font-size:.85rem;padding:.25rem 0;padding-left:1.2rem;position:relative}
+.feature li::before{content:'→';position:absolute;left:0;color:var(--purple)}
+
+/* WHAT IS */
+.what-text{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+.what-text p{color:var(--text2);font-size:1.05rem;line-height:1.8}
+.what-diagram{display:flex;flex-direction:column;gap:.5rem}
+.phase{display:flex;align-items:center;gap:.5rem}
+.phase-label{font-size:.8rem;font-weight:600;padding:.4rem 1rem;border-radius:8px;background:rgba(124,58,237,.1);color:#a78bfa;min-width:160px;text-align:center}
+.phase-arrow{color:var(--text3)}
+
+/* UPGRADE SECTION */
+.upgrade-section{background:linear-gradient(135deg,rgba(124,58,237,.08),rgba(59,130,246,.05))}
+.whats-new{margin-top:2rem;padding:1.5rem;background:var(--bg);border-radius:var(--radius);border:1px solid rgba(255,255,255,.06)}
+.whats-new h4{font-size:1rem;font-weight:700;margin-bottom:1rem;color:var(--text)}
+.whats-new ul{list-style:none}
+.whats-new li{padding:.5rem 0;color:var(--text2);font-size:.9rem;display:flex;align-items:flex-start;gap:.5rem}
+.whats-new li strong{color:var(--text)}
+
+/* FAQ SECTION */
+.faq-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1.25rem}
+.faq-item{background:var(--bg2);border:1px solid rgba(255,255,255,.06);border-radius:var(--radius);padding:1.5rem;transition:all .3s}
+.faq-item:hover{border-color:rgba(124,58,237,.25);transform:translateY(-2px)}
+.faq-item h4{font-size:.95rem;font-weight:600;margin-bottom:.75rem;color:var(--text)}
+.faq-item p{color:var(--text2);font-size:.85rem;line-height:1.6}
+.faq-item code{background:rgba(124,58,237,.15);color:#a78bfa;padding:.15rem .4rem;border-radius:4px;font-size:.8rem}
+.faq-item a{color:var(--purple);text-decoration:underline;text-underline-offset:2px}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);z-index:2000;display:flex;align-items:center;justify-content:center;padding:1.5rem;opacity:0;pointer-events:none;transition:opacity .25s}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal-card{background:var(--bg2);border:1px solid rgba(255,255,255,.1);border-radius:var(--radius-lg);padding:2.5rem;max-width:580px;width:100%;max-height:80vh;overflow-y:auto;position:relative;transform:translateY(20px);transition:transform .25s}
+.modal-overlay.open .modal-card{transform:translateY(0)}
+.modal-close{position:absolute;top:1.25rem;right:1.25rem;background:rgba(255,255,255,.08);border:none;color:var(--text2);font-size:1.2rem;width:32px;height:32px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.modal-close:hover{background:rgba(255,255,255,.15);color:var(--text)}
+.modal-icon{font-size:2.5rem;margin-bottom:1rem}
+.modal-title{font-size:1.4rem;font-weight:700;margin-bottom:1rem}
+.modal-body{color:var(--text2);font-size:.92rem;line-height:1.7}
+.modal-body p{margin-bottom:.75rem}
+.modal-body ul{list-style:none;margin:.75rem 0}
+.modal-body li{padding:.3rem 0 .3rem 1.2rem;position:relative}
+.modal-body li::before{content:'→';position:absolute;left:0;color:var(--purple)}
+.modal-body code{background:rgba(124,58,237,.15);color:#a78bfa;padding:.15rem .4rem;border-radius:4px;font-size:.85rem}
+.modal-body .tag{display:inline-block;padding:.2rem .6rem;background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.2);border-radius:100px;font-size:.75rem;color:#a78bfa;margin:.25rem .2rem 0 0}
+.feature{cursor:pointer;transition:all .3s}
+.feature:hover{border-color:rgba(124,58,237,.3);transform:translateY(-3px);box-shadow:0 8px 24px rgba(124,58,237,.1)}
+.skill-item{cursor:pointer}
+
+/* PLAYGROUND SECTION */
+.pg-carousel{display:flex;gap:1rem;overflow-x:auto;padding-bottom:1rem;scrollbar-width:thin;scrollbar-color:rgba(124,58,237,.4) transparent;scroll-snap-type:x mandatory}
+.pg-carousel::-webkit-scrollbar{height:4px}
+.pg-carousel::-webkit-scrollbar-track{background:transparent}
+.pg-carousel::-webkit-scrollbar-thumb{background:rgba(124,58,237,.4);border-radius:4px}
+.pg-card{flex:0 0 220px;scroll-snap-align:start;background:var(--bg2);border:1px solid rgba(255,255,255,.06);border-radius:var(--radius-lg);padding:1.5rem;transition:all .3s;position:relative}
+.pg-card:hover{border-color:rgba(124,58,237,.3);transform:translateY(-3px);box-shadow:0 8px 20px rgba(124,58,237,.1)}
+/* pg-preview is injected by JS into body, not inside carousel */
+#pg-float-preview{position:fixed;z-index:9999;pointer-events:none;opacity:0;transform:scale(.85) translateY(8px);transition:opacity .2s,transform .2s;transform-origin:bottom center;width:380px;background:var(--bg2);border:1px solid rgba(255,255,255,.15);border-radius:14px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.85)}
+#pg-float-preview.visible{opacity:1;transform:scale(1) translateY(0)}
+#pg-float-preview img{width:100%;display:block}
+#pg-float-preview-footer{padding:.6rem .9rem;background:rgba(124,58,237,.12);border-top:1px solid rgba(255,255,255,.06)}
+#pg-float-preview-title{font-size:.85rem;font-weight:700;color:var(--text)}
+#pg-float-preview-desc{font-size:.75rem;color:var(--text2);margin-top:.15rem}
+.pg-card{cursor:default;transition:transform .2s,box-shadow .2s,border-color .2s}
+.pg-card:hover{transform:scale(1.06) translateY(-4px);box-shadow:0 12px 30px rgba(124,58,237,.2);border-color:rgba(124,58,237,.4);z-index:2}
+.pg-card-icon{font-size:2rem;margin-bottom:.75rem}
+.pg-card-title{font-size:.9rem;font-weight:700;margin-bottom:.4rem;color:var(--text)}
+.pg-card-desc{font-size:.8rem;color:var(--text2);line-height:1.5}
+.pg-features{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-top:2.5rem}
+.pg-feature{display:flex;align-items:flex-start;gap:.75rem;padding:1rem;background:rgba(124,58,237,.05);border:1px solid rgba(124,58,237,.1);border-radius:var(--radius)}
+.pg-feature-icon{font-size:1.3rem;flex-shrink:0}
+.pg-feature-text strong{display:block;font-size:.85rem;font-weight:600;margin-bottom:.2rem}
+.pg-feature-text span{font-size:.8rem;color:var(--text2)}
+
+/* CHAT WIDGET */
+.chat-widget{position:fixed;bottom:24px;right:24px;z-index:1000}
+.chat-toggle{display:flex;align-items:center;gap:8px;padding:12px 20px;background:var(--grad);border:none;border-radius:100px;color:#fff;font-weight:600;font-size:.9rem;cursor:pointer;box-shadow:0 4px 20px rgba(124,58,237,.4);transition:all .3s}
+.chat-toggle:hover{transform:translateY(-2px);box-shadow:0 6px 25px rgba(124,58,237,.5)}
+.chat-icon{font-size:1.2rem}
+.chat-window{display:none;position:absolute;bottom:70px;right:0;width:380px;max-width:calc(100vw - 48px);height:500px;max-height:calc(100vh - 120px);background:var(--bg2);border:1px solid rgba(255,255,255,.1);border-radius:16px;overflow:hidden;flex-direction:column;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+.chat-window.open{display:flex}
+.chat-header{display:flex;align-items:center;justify-content:space-between;padding:16px;background:rgba(124,58,237,.1);border-bottom:1px solid rgba(255,255,255,.06)}
+.chat-header-info{display:flex;align-items:center;gap:8px;font-weight:600}
+.chat-header-icon{font-size:1.2rem}
+.chat-close{background:none;border:none;color:var(--text2);font-size:1.5rem;cursor:pointer;padding:0;line-height:1}
+.chat-close:hover{color:var(--text)}
+.chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
+.chat-message{display:flex;flex-direction:column;max-width:85%}
+.chat-message.user{align-self:flex-end}
+.chat-message.assistant{align-self:flex-start}
+.message-content{padding:12px 16px;border-radius:16px;font-size:.9rem;line-height:1.5}
+.chat-message.user .message-content{background:var(--grad);color:#fff;border-bottom-right-radius:4px}
+.chat-message.assistant .message-content{background:rgba(255,255,255,.06);color:var(--text);border-bottom-left-radius:4px}
+.chat-message.assistant .message-content code{background:rgba(0,0,0,.3);padding:2px 6px;border-radius:4px;font-size:.85em}
+.chat-input-container{display:flex;gap:8px;padding:16px;border-top:1px solid rgba(255,255,255,.06);background:rgba(0,0,0,.2)}
+#chatInput{flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:12px 16px;color:var(--text);font-size:.9rem;font-family:inherit}
+#chatInput:focus{outline:none;border-color:rgba(124,58,237,.5)}
+#chatInput::placeholder{color:var(--text3)}
+.chat-send{background:var(--grad);border:none;border-radius:12px;padding:12px;cursor:pointer;color:#fff;transition:opacity .2s}
+.chat-send:hover{opacity:.9}
+.chat-send:disabled{opacity:.5;cursor:not-allowed}
+.typing-indicator{display:flex;gap:4px;padding:8px 12px}
+.typing-indicator span{width:8px;height:8px;background:var(--text3);border-radius:50%;animation:typing 1.4s infinite}
+.typing-indicator span:nth-child(2){animation-delay:.2s}
+.typing-indicator span:nth-child(3){animation-delay:.4s}
+@keyframes typing{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-4px)}}
+@media(max-width:768px){
+  .chat-widget{bottom:0;right:0;left:0;display:flex;justify-content:flex-end;padding:16px}
+  .chat-label{display:none}
+  .chat-toggle{padding:14px;border-radius:50%;width:56px;height:56px;justify-content:center}
+  .chat-window{position:fixed;top:0;left:0;right:0;bottom:0;width:100vw;height:100vh;max-width:100vw;max-height:100vh;border-radius:0;z-index:1001}
+  .chat-window.open{display:flex}
+  .chat-header{padding:16px;padding-top:max(16px,env(safe-area-inset-top))}
+  .chat-input-container{padding:16px;padding-bottom:max(16px,env(safe-area-inset-bottom))}
+  .chat-messages{padding:12px}
+  .message-content{font-size:.85rem;padding:10px 14px}
+}
+
+/* FOOTER */
+footer{padding:3rem 2rem;border-top:1px solid rgba(255,255,255,.06);text-align:center}
+footer p{color:var(--text3);font-size:.85rem}
+footer a{color:var(--purple);transition:color .2s}
+footer a:hover{color:#a78bfa}
+footer .footer-links{display:flex;justify-content:center;gap:2rem;margin-bottom:1rem;flex-wrap:wrap}
+
+/* ANIMATIONS */
+.fade-in{opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease}
+.fade-in.visible{opacity:1;transform:translateY(0)}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  nav .nav-links{display:none;position:absolute;top:100%;left:0;right:0;flex-direction:column;background:rgba(10,10,15,.95);padding:1.5rem;gap:1rem;border-bottom:1px solid rgba(255,255,255,.06)}
+  nav .nav-links.open{display:flex}
+  .mobile-toggle{display:block}
+  section{padding:4rem 1.25rem}
+  .what-text{grid-template-columns:1fr}
+  .hero h1{font-size:2.2rem}
+  .hero{padding-top:160px}
+  .features-grid{grid-template-columns:1fr}
+  .skills-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
+  .faq-grid{grid-template-columns:1fr}
+}
+
+/* Glow orbs */
+.glow{position:fixed;border-radius:50%;filter:blur(120px);pointer-events:none;z-index:-1;opacity:.4}
+.glow-1{width:500px;height:500px;background:rgba(124,58,237,.12);top:10%;left:-10%}
+.glow-2{width:400px;height:400px;background:rgba(59,130,246,.1);bottom:20%;right:-5%}
+
+/* WIZARD STYLES */
+.wizard-container{background:var(--bg);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius-lg);padding:2rem;overflow:hidden}
+.wizard-progress{display:flex;align-items:center;justify-content:center;gap:.5rem;margin-bottom:2.5rem;padding:0 1rem;transition:opacity .3s}
+.progress-step{display:flex;flex-direction:column;align-items:center;gap:.4rem;opacity:.5;transition:opacity .3s}
+.progress-step.active,.progress-step.completed{opacity:1}
+.progress-num{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;transition:all .3s}
+.progress-step.active .progress-num{background:var(--grad);border-color:transparent;color:#fff}
+.progress-step.completed .progress-num{background:#22c55e;border-color:transparent;color:#fff}
+.progress-label{font-size:.7rem;color:var(--text3);font-weight:500;text-transform:uppercase;letter-spacing:.5px}
+.progress-step.active .progress-label,.progress-step.completed .progress-label{color:var(--text)}
+.progress-line{flex:1;max-width:80px;height:3px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden}
+.progress-fill{width:0;height:100%;background:var(--grad);transition:width .4s ease}
+.progress-step.completed+.progress-line .progress-fill{width:100%}
+
+.wizard-steps{position:relative;min-height:320px}
+.wizard-step{position:absolute;top:0;left:0;right:0;opacity:0;visibility:hidden;transform:translateX(30px);transition:all .4s ease;display:flex;flex-direction:column;align-items:center;text-align:center;padding:1rem}
+.wizard-step.active{opacity:1;visibility:visible;transform:translateX(0);position:relative}
+.wizard-step.exit-left{transform:translateX(-30px)}
+.wizard-step-icon{font-size:3rem;margin-bottom:1rem}
+.wizard-step-title{font-size:1.5rem;font-weight:700;margin-bottom:.5rem}
+.wizard-step-desc{color:var(--text2);font-size:.95rem;margin-bottom:1.5rem;max-width:400px}
+
+.wizard-input-wrap{position:relative;width:100%;max-width:350px;margin-bottom:1.5rem}
+.wizard-input{width:100%;padding:1rem 1.25rem;border-radius:12px;border:2px solid rgba(255,255,255,.15);background:var(--bg2);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1.1rem;text-align:center;transition:all .2s}
+.wizard-input:focus{outline:none;border-color:var(--purple);box-shadow:0 0 0 4px rgba(124,58,237,.15)}
+.wizard-input::placeholder{color:var(--text3)}
+.wizard-input.invalid{border-color:#ef4444}
+.wizard-input.valid{border-color:#22c55e}
+.input-validation{position:absolute;right:1rem;top:50%;transform:translateY(-50%);font-size:1.2rem}
+
+.wizard-options{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;margin-bottom:1.5rem}
+.wizard-options.three-cols{gap:.75rem}
+.wizard-option{display:flex;flex-direction:column;align-items:center;gap:.4rem;padding:1.25rem 1.5rem;min-width:140px;border-radius:var(--radius);background:rgba(255,255,255,.04);border:2px solid rgba(255,255,255,.1);cursor:pointer;transition:all .25s;position:relative}
+.wizard-option:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.2);transform:translateY(-2px)}
+.wizard-option.selected{background:rgba(124,58,237,.15);border-color:var(--purple);box-shadow:0 0 0 4px rgba(124,58,237,.1)}
+.option-icon{font-size:1.75rem}
+.option-title{font-weight:600;font-size:.95rem}
+.option-desc{color:var(--text3);font-size:.75rem}
+.option-tooltip{display:none;position:absolute;bottom:calc(100% + 10px);left:50%;transform:translateX(-50%);width:260px;padding:.75rem 1rem;background:var(--bg);border:1px solid rgba(255,255,255,.15);border-radius:10px;font-size:.8rem;color:var(--text2);text-align:left;line-height:1.5;z-index:10;box-shadow:0 8px 30px rgba(0,0,0,.4)}
+.option-tooltip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:8px solid transparent;border-top-color:rgba(255,255,255,.15)}
+.wizard-option.has-tooltip:hover .option-tooltip{display:block}
+
+.wizard-nav{display:flex;justify-content:space-between;width:100%;max-width:400px;margin-top:auto;padding-top:1rem}
+.wizard-btn{padding:.75rem 1.75rem;border-radius:10px;font-weight:600;font-size:.95rem;cursor:pointer;border:none;transition:all .25s}
+.wizard-btn.primary{background:var(--grad);color:#fff;box-shadow:0 4px 20px rgba(124,58,237,.3)}
+.wizard-btn.primary:hover{transform:translateY(-2px);box-shadow:0 6px 25px rgba(124,58,237,.4)}
+.wizard-btn.primary.generate{background:linear-gradient(135deg,#22c55e,#16a34a);box-shadow:0 4px 20px rgba(34,197,94,.3)}
+.wizard-btn.primary.generate:hover{box-shadow:0 6px 25px rgba(34,197,94,.4)}
+.wizard-btn.secondary{background:rgba(255,255,255,.06);color:var(--text);border:1px solid rgba(255,255,255,.1)}
+.wizard-btn.secondary:hover{background:rgba(255,255,255,.1)}
+.wizard-btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important}
+
+.wizard-result-box{background:var(--bg2);border:1px solid rgba(124,58,237,.3);border-radius:var(--radius);padding:1.25rem;position:relative;width:100%;max-width:600px;margin-bottom:1rem}
+.result-command{font-family:'JetBrains Mono',monospace;font-size:.85rem;color:var(--text);line-height:1.6;word-break:break-all;text-align:left;padding-right:3rem}
+.wizard-copy-btn{position:absolute;top:.75rem;right:.75rem;display:flex;align-items:center;gap:.4rem;padding:.5rem .75rem;border-radius:8px;background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.3);color:var(--purple);font-size:.8rem;font-weight:600;cursor:pointer;transition:all .2s}
+.wizard-copy-btn:hover{background:rgba(124,58,237,.25)}
+.wizard-copy-btn.copied{background:rgba(34,197,94,.15);border-color:rgba(34,197,94,.3);color:#22c55e}
+.wizard-then-run{background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);border-radius:var(--radius);padding:1rem 1.5rem;width:100%;max-width:600px;text-align:left}
+.wizard-then-run strong{color:#22c55e}
+.wizard-then-run code{background:rgba(0,0,0,.3);padding:.2rem .5rem;border-radius:4px;font-size:.9rem}
+.wizard-then-run .dual-note{margin-top:.5rem;font-size:.85rem;color:var(--text2)}
+
+@media(max-width:600px){
+  .wizard-container{padding:1.25rem}
+  .wizard-progress{gap:.25rem;padding:0}
+  .progress-label{display:none}
+  .progress-num{width:28px;height:28px;font-size:.75rem}
+  .progress-line{max-width:40px}
+  .wizard-step-title{font-size:1.25rem}
+  .wizard-options{flex-direction:column}
+  .wizard-option{flex-direction:row;min-width:unset;width:100%;max-width:280px;padding:1rem;text-align:left}
+  .option-icon{font-size:1.5rem}
+  .wizard-options.three-cols .wizard-option{flex-direction:column;text-align:center}
+  .wizard-nav{flex-direction:column-reverse;gap:.75rem}
+  .wizard-btn{width:100%}
+  .result-command{font-size:.75rem;padding-right:0;padding-top:2.5rem}
+  .wizard-copy-btn{top:.5rem;right:.5rem}
+}
+</style>
+</head>
+<body>
+
+<div class="glow glow-1"></div>
+<div class="glow glow-2"></div>
+
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="logo">🧠 Genius Team</a>
+    <button class="mobile-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Menu">☰</button>
+    <div class="nav-links">
+      <a href="#what">About</a>
+      <a href="#modes">Modes</a>
+      <a href="#features">Features</a>
+      <a href="#playgrounds">Playgrounds</a>
+      <a href="#quickstart">Quick Start</a>
+      <a href="#upgrade">Upgrade</a>
+      <a href="#faq">FAQ</a>
+      <a href="https://github.com/w-3-art/genius-team" class="nav-cta" target="_blank">GitHub →</a>
+    </div>
+  </div>
+</nav>
+
+<!-- UPDATE BANNER -->
+<div class="update-banner" id="updateBanner">
+  <div class="banner-content">
+    <span class="banner-badge">🆕 NEW</span>
+    <span class="banner-text"><strong>Genius Team v11.0</strong> is here!</span>
+    <span class="banner-features">12 Interactive Playgrounds • Anti-Drift Guard • Persistent Memory</span>
+    <a href="#upgrade" class="banner-link">Upgrade now →</a>
+    <button class="banner-close" onclick="closeBanner()" aria-label="Close">×</button>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="fade-in">
+      <div class="hero-badge">✨ v11.0 — Multi-Engine: Claude + Codex + Dual Mode</div>
+      <h1>Your <span class="grad">AI Product Team.</span><br>From Idea to Production.</h1>
+      <p>An open-source starter kit of 21+ specialized AI skills for Claude Code that work together to build your project from start to finish.</p>
+      <div class="hero-btns">
+        <a href="#quickstart" class="btn btn-primary">Get Started</a>
+        <a href="https://github.com/w-3-art/genius-team" target="_blank" class="btn btn-secondary">⭐ View on GitHub</a>
+      </div>
+    </div>
+    <div class="hero-terminal fade-in">
+      <div class="terminal-bar"><span class="terminal-dot"></span><span class="terminal-dot"></span><span class="terminal-dot"></span></div>
+      <div class="terminal-body">
+        <div><span class="prompt">$</span> <span class="cmd">bash &lt;(curl -fsSL https://raw.githubusercontent.com/w-3-art/genius-team/main/scripts/create.sh) my-app</span></div>
+        <div style="color:#22c55e">✓ Cloned genius-team → my-app</div>
+        <div style="color:#22c55e">✓ Configured CLI mode</div>
+        <div style="color:#a78bfa">🧠 Say what you want to build...</div>
+        <div><span class="prompt">→</span> <span class="cmd">I want to build a booking system for a hair salon</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT IS -->
+<section id="what">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-label">What is Genius Team?</div>
+      <div class="section-title">A complete AI product pipeline</div>
+      <div class="section-sub">Genius Team orchestrates 21+ specialized AI agents that collaborate to take your idea through every stage of product development — autonomously.</div>
+    </div>
+    <div class="pipeline fade-in">
+      <span class="pipeline-step">🔍 Discovery</span><span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">📊 Market</span><span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">📋 Specs</span><span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">🎨 Design</span><span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">📣 Marketing</span><span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">🏗️ Architecture</span><span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">⚡ Development</span><span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">✅ QA</span><span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">🔒 Security</span><span class="pipeline-arrow">→</span>
+      <span class="pipeline-step">🚀 Deploy</span>
+    </div>
+    <div class="features-grid fade-in" style="margin-top:3rem">
+      <div class="feature">
+        <h3>🤖 Phase 1: Ideation</h3>
+        <p>Conversational and collaborative. The AI interviews you, validates your idea, and produces specs, design, and architecture — with your approval at every checkpoint.</p>
+      </div>
+      <div class="feature">
+        <h3>⚡ Phase 2: Execution</h3>
+        <p>Fully autonomous. Agent Teams execute tasks in parallel with git worktree isolation, mandatory QA loops, and real-time progress tracking.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MODES -->
+<section id="modes" style="background:var(--bg2)">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-label">Operating Modes</div>
+      <div class="section-title">Choose your workflow</div>
+      <div class="section-sub">Four modes to match how you work. Switch anytime.</div>
+    </div>
+    <div class="cards-grid fade-in">
+      <div class="card">
+        <span class="badge badge-default">Default</span>
+        <span class="card-icon">⌨️</span>
+        <h3>CLI Mode</h3>
+        <p>Terminal-focused. Full hook system (SessionStart, PreCompact, Stop, PostToolUse). Agent Teams via Shift+Tab.</p>
+      </div>
+      <div class="card">
+        <span class="badge badge-ide">VS Code</span>
+        <span class="card-icon">🖥️</span>
+        <h3>IDE Mode</h3>
+        <p>VS Code & Cursor focused. Installs tasks and rules automatically. Agent Teams via Task().</p>
+      </div>
+      <div class="card">
+        <span class="badge badge-omni">Multi-Provider</span>
+        <span class="card-icon">🌐</span>
+        <h3>Omni Mode</h3>
+        <p>Claude Code leads, secondary providers (Codex, Kimi, Gemini) handle specialized tasks. Auto-fallback.</p>
+      </div>
+      <div class="card">
+        <span class="badge badge-dual">Adversarial</span>
+        <span class="card-icon">⚔️</span>
+        <h3>Dual Mode</h3>
+        <p>Builder + Challenger adversarial workflow. One model builds, another challenges. Higher code quality.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-label">Features</div>
+      <div class="section-title">Built for serious projects</div>
+      <div class="section-sub">Everything you need to go from zero to production, with no external dependencies.</div>
+    </div>
+    <div class="features-grid fade-in">
+      <div class="feature" onclick="openModal('feature-agent-teams')">
+        <h3>🤖 Agent Teams</h3>
+        <p>Built on Claude Code's experimental agent teams. The Lead orchestrates while teammates execute in parallel with git worktree isolation.</p>
+      </div>
+      <div class="feature" onclick="openModal('feature-playgrounds')">
+        <h3>🎮 Interactive Playgrounds</h3>
+        <p>12 visual decision-making playgrounds for each phase. See options, make choices, understand trade-offs — all in a guided interface.</p>
+      </div>
+      <div class="feature" onclick="openModal('feature-guard')">
+        <h3>🛡️ Anti-Drift Guard</h3>
+        <p>Keeps Claude on track and prevents going off-rails. Auto-detects when the AI drifts from the plan and brings it back.</p>
+        <ul>
+          <li>/guard-check — See current status</li>
+          <li>/guard-recover — Get back on track</li>
+        </ul>
+      </div>
+      <div class="feature" onclick="openModal('feature-memory')">
+        <h3>🧠 Persistent Memory</h3>
+        <p>Nothing is ever forgotten between sessions. Memory lives in <code>.genius/memory/</code> with auto-generated BRIEFING.md loaded at every session.</p>
+        <ul>
+          <li>decisions.json — Key decisions</li>
+          <li>patterns.json — Code conventions</li>
+          <li>progress.json — Task tracking</li>
+          <li>errors.json — Resolved solutions</li>
+        </ul>
+      </div>
+      <div class="feature" onclick="openModal('feature-qa')">
+        <h3>🔄 Mandatory QA Loop</h3>
+        <p>Every task goes through: Dev → QA-micro → Fix → Re-QA → ✅. Nothing ships without passing quality assurance.</p>
+      </div>
+      <div class="feature" onclick="openModal('feature-tokens')">
+        <h3>💰 Save-Token Mode</h3>
+        <p>Toggle <code>/save-tokens</code> to use Sonnet for high-volume roles while keeping Opus for lead and architect. Cut costs without cutting quality.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PLAYGROUNDS SHOWCASE -->
+<section id="playgrounds" style="background:var(--bg2)">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-label">Interactive Playgrounds</div>
+      <div class="section-title">Visual decision interfaces, for every phase</div>
+      <div class="section-sub">Each playground turns a complex decision into a visual, guided experience. No more guessing — see the options, understand the trade-offs, make the call.</div>
+    </div>
+    <div class="pg-carousel fade-in">
+      <div class="pg-card" data-preview="/screenshots/project-canvas.png" data-desc="Define vision, scope, and success metrics before building anything.">
+        <div class="pg-card-icon">🗺️</div>
+        <div class="pg-card-title">Project Canvas</div>
+        <div class="pg-card-desc">Define vision, scope, and success metrics before building anything.</div>
+      </div>
+      <div class="pg-card" data-preview="/screenshots/market-simulator.png" data-desc="Model your market size, positioning, and competitive landscape visually.">
+        <div class="pg-card-icon">📊</div>
+        <div class="pg-card-title">Market Simulator</div>
+        <div class="pg-card-desc">Model your market size, positioning, and competitive landscape visually.</div>
+      </div>
+      <div class="pg-card" data-preview="/screenshots/architecture-explorer.png" data-desc="Compare architectural patterns side-by-side with trade-off analysis.">
+        <div class="pg-card-icon">🏗️</div>
+        <div class="pg-card-title">Architecture Explorer</div>
+        <div class="pg-card-desc">Compare architectural patterns side-by-side with trade-off analysis.</div>
+      </div>
+      <div class="pg-card" data-preview="/screenshots/stack-configurator.png" data-desc="Pick your tech stack with compatibility checks and recommendations.">
+        <div class="pg-card-icon">⚙️</div>
+        <div class="pg-card-title">Stack Configurator</div>
+        <div class="pg-card-desc">Pick your tech stack with compatibility checks and recommendations.</div>
+      </div>
+      <div class="pg-card" data-preview="/screenshots/design-system-builder.png" data-desc="Define your design tokens, component library, and visual language.">
+        <div class="pg-card-icon">🎨</div>
+        <div class="pg-card-title">Design System Builder</div>
+        <div class="pg-card-desc">Define your design tokens, component library, and visual language.</div>
+      </div>
+      <div class="pg-card" data-preview="/screenshots/gtm-simulator.png" data-desc="Simulate go-to-market strategies and identify the best launch approach.">
+        <div class="pg-card-icon">📣</div>
+        <div class="pg-card-title">GTM Simulator</div>
+        <div class="pg-card-desc">Simulate go-to-market strategies and identify the best launch approach.</div>
+      </div>
+      <div class="pg-card" data-preview="/screenshots/copy-ab-tester.png" data-desc="Compare messaging variants and select the most compelling copy.">
+        <div class="pg-card-icon">✍️</div>
+        <div class="pg-card-title">Copy A/B Tester</div>
+        <div class="pg-card-desc">Compare messaging variants and select the most compelling copy.</div>
+      </div>
+      <div class="pg-card" data-preview="/screenshots/progress-dashboard.png" data-desc="Real-time view of project status, milestones, and velocity.">
+        <div class="pg-card-icon">📈</div>
+        <div class="pg-card-title">Progress Dashboard</div>
+        <div class="pg-card-desc">Real-time view of project status, milestones, and velocity.</div>
+      </div>
+      <div class="pg-card" data-preview="/screenshots/risk-matrix.png" data-desc="Identify, score, and mitigate project risks before they become blockers.">
+        <div class="pg-card-icon">⚠️</div>
+        <div class="pg-card-title">Risk Matrix</div>
+        <div class="pg-card-desc">Identify, score, and mitigate project risks before they become blockers.</div>
+      </div>
+      <div class="pg-card" data-preview="/screenshots/user-journey-builder.png" data-desc="Map user flows and touchpoints to design the ideal experience.">
+        <div class="pg-card-icon">🛤️</div>
+        <div class="pg-card-title">User Journey Builder</div>
+        <div class="pg-card-desc">Map user flows and touchpoints to design the ideal experience.</div>
+      </div>
+      <div class="pg-card" data-preview="/screenshots/deploy-checklist.png" data-desc="Step-by-step pre-launch checklist with automated status tracking.">
+        <div class="pg-card-icon">✅</div>
+        <div class="pg-card-title">Deploy Checklist</div>
+        <div class="pg-card-desc">Step-by-step pre-launch checklist with automated status tracking.</div>
+      </div>
+      <div class="pg-card" data-preview="/screenshots/test-coverage-map.png" data-desc="Visualize test coverage across your codebase and spot gaps.">
+        <div class="pg-card-icon">🧪</div>
+        <div class="pg-card-title">Test Coverage Map</div>
+        <div class="pg-card-desc">Visualize test coverage across your codebase and spot gaps.</div>
+      </div>
+    </div>
+    <div class="pg-features fade-in">
+      <div class="pg-feature">
+        <div class="pg-feature-icon">🖱️</div>
+        <div class="pg-feature-text"><strong>Fully interactive</strong><span>Click, compare, decide — no static docs</span></div>
+      </div>
+      <div class="pg-feature">
+        <div class="pg-feature-icon">🔗</div>
+        <div class="pg-feature-text"><strong>Context-aware</strong><span>Each playground loads your project's current state</span></div>
+      </div>
+      <div class="pg-feature">
+        <div class="pg-feature-icon">💾</div>
+        <div class="pg-feature-text"><strong>Decisions saved</strong><span>Choices are persisted in memory for the AI to reference</span></div>
+      </div>
+      <div class="pg-feature">
+        <div class="pg-feature-icon">📡</div>
+        <div class="pg-feature-text"><strong>Served locally</strong><span>Runs in your browser, no external dependencies</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- QUICK START WIZARD -->
+<section id="quickstart" style="background:var(--bg2)">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-label">Quick Start</div>
+      <div class="section-title">Set up your project in 30 seconds</div>
+      <div class="section-sub">Answer three quick questions and get your personalized setup command.</div>
+    </div>
+    
+    <!-- PREREQUISITE -->
+    <div class="fade-in prereq-box" style="margin-bottom:2rem">
+      <div class="prereq-title">📋 Prerequisite: Install Claude Code first</div>
+      <div class="code-block" style="margin-bottom:.75rem">
+        <div class="code-header"><span class="code-lang">macOS / Linux / WSL</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+        <pre>curl -fsSL https://claude.ai/install.sh | bash</pre>
+      </div>
+      <a href="https://code.claude.com/docs/en/overview" target="_blank" class="prereq-link">Or get it from the official website →</a>
+    </div>
+    
+    <!-- WIZARD CONTAINER -->
+    <div class="wizard-container fade-in">
+      <!-- Progress bar -->
+      <div class="wizard-progress">
+        <div class="progress-step active" data-step="1">
+          <span class="progress-num">1</span>
+          <span class="progress-label">Project</span>
+        </div>
+        <div class="progress-line"><div class="progress-fill" id="progressFill1"></div></div>
+        <div class="progress-step" data-step="2">
+          <span class="progress-num">2</span>
+          <span class="progress-label">Environment</span>
+        </div>
+        <div class="progress-line"><div class="progress-fill" id="progressFill2"></div></div>
+        <div class="progress-step" data-step="3">
+          <span class="progress-num">3</span>
+          <span class="progress-label">AI Engine</span>
+        </div>
+      </div>
+      
+      <!-- Wizard steps -->
+      <div class="wizard-steps">
+        <!-- Step 0: Project Type -->
+        <div class="wizard-step active" id="wizardStep0">
+          <div class="wizard-step-icon">🚀</div>
+          <h3 class="wizard-step-title">New or existing project?</h3>
+          <p class="wizard-step-desc">Starting from scratch or adding Genius Team to an existing codebase?</p>
+          <div class="wizard-options">
+            <button class="wizard-option selected" data-value="new" onclick="selectOption(this, 'projectType')">
+              <span class="option-icon">✨</span>
+              <span class="option-title">New project</span>
+              <span class="option-desc">Start from scratch</span>
+            </button>
+            <button class="wizard-option" data-value="existing" onclick="selectOption(this, 'projectType')">
+              <span class="option-icon">📁</span>
+              <span class="option-title">Existing project</span>
+              <span class="option-desc">Add to my codebase</span>
+            </button>
+          </div>
+          <div class="wizard-nav">
+            <div></div>
+            <button class="wizard-btn primary" onclick="wizardNext()">Next →</button>
+          </div>
+        </div>
+
+        <!-- Step 1: Project Name (new projects only) -->
+        <div class="wizard-step" id="wizardStep1">
+          <div class="wizard-step-icon">🎯</div>
+          <h3 class="wizard-step-title">What's your project name?</h3>
+          <p class="wizard-step-desc">Use lowercase letters, numbers, and dashes. No spaces.</p>
+          <div class="wizard-input-wrap">
+            <input type="text" id="wizardProjectName" class="wizard-input" placeholder="my-awesome-app" oninput="validateProjectName(this)">
+            <span class="input-validation" id="nameValidation"></span>
+          </div>
+          <div class="wizard-nav">
+            <div></div>
+            <button class="wizard-btn primary" onclick="wizardNext()" id="step1Next">Next →</button>
+          </div>
+        </div>
+        
+        <!-- Step 2: Environment -->
+        <div class="wizard-step" id="wizardStep2">
+          <div class="wizard-step-icon">💻</div>
+          <h3 class="wizard-step-title">Where will you code?</h3>
+          <p class="wizard-step-desc">Choose your preferred development environment.</p>
+          <div class="wizard-options">
+            <button class="wizard-option selected" data-value="cli" onclick="selectOption(this, 'environment')">
+              <span class="option-icon">🖥️</span>
+              <span class="option-title">Terminal</span>
+              <span class="option-desc">CLI-focused workflow</span>
+            </button>
+            <button class="wizard-option" data-value="ide" onclick="selectOption(this, 'environment')">
+              <span class="option-icon">📝</span>
+              <span class="option-title">IDE</span>
+              <span class="option-desc">VS Code / Cursor</span>
+            </button>
+          </div>
+          <div class="wizard-nav">
+            <button class="wizard-btn secondary" onclick="wizardBack()">← Back</button>
+            <button class="wizard-btn primary" onclick="wizardNext()">Next →</button>
+          </div>
+        </div>
+        
+        <!-- Step 3: AI Engine -->
+        <div class="wizard-step" id="wizardStep3">
+          <div class="wizard-step-icon">🤖</div>
+          <h3 class="wizard-step-title">Which AI engine?</h3>
+          <p class="wizard-step-desc">Select your AI assistant for building the project.</p>
+          <div class="wizard-options three-cols">
+            <button class="wizard-option selected" data-value="claude" onclick="selectOption(this, 'engine')">
+              <span class="option-icon">🧠</span>
+              <span class="option-title">Claude Code</span>
+              <span class="option-desc">Anthropic's coding agent</span>
+            </button>
+            <button class="wizard-option" data-value="codex" onclick="selectOption(this, 'engine')">
+              <span class="option-icon">🔮</span>
+              <span class="option-title">Codex CLI</span>
+              <span class="option-desc">OpenAI's coding agent</span>
+            </button>
+            <button class="wizard-option has-tooltip" data-value="dual" onclick="selectOption(this, 'engine')">
+              <span class="option-icon">⚔️</span>
+              <span class="option-title">Dual Mode</span>
+              <span class="option-desc">Both (adversarial)</span>
+              <span class="option-tooltip">Claude Code builds your project while Codex CLI reviews and challenges. They iterate until both agree the code is solid.</span>
+            </button>
+          </div>
+          <div class="wizard-nav">
+            <button class="wizard-btn secondary" onclick="wizardBack()">← Back</button>
+            <button class="wizard-btn primary generate" onclick="wizardGenerate()">✨ Generate Command</button>
+          </div>
+        </div>
+        
+        <!-- Result -->
+        <div class="wizard-step" id="wizardResult">
+          <div class="wizard-step-icon">📋</div>
+          <h3 class="wizard-step-title">Your Setup Command</h3>
+          <p class="wizard-step-desc">Copy and run this in your terminal.</p>
+          <div id="resultNote" style="display:none;width:100%;max-width:520px;margin-bottom:.75rem;padding:.75rem 1rem;background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.2);border-radius:10px;font-size:.85rem;color:var(--text2);text-align:left">
+            <strong>①</strong> First, navigate to your project:<br>
+            <code style="display:inline-block;margin-top:.3rem;padding:.2rem .5rem;background:var(--bg2);border-radius:6px;font-size:.9rem">cd your-project</code>
+            <br><br><strong>②</strong> Then run the installer below:
+          </div>
+          <div class="wizard-result-box">
+            <div class="result-command" id="resultCommand"></div>
+            <button class="wizard-copy-btn" onclick="copyWizardCommand()">
+              <span class="copy-icon">📋</span>
+              <span class="copy-text">Copy</span>
+            </button>
+          </div>
+          <div class="wizard-then-run" id="thenRun"></div>
+          <div class="wizard-nav">
+            <button class="wizard-btn secondary" onclick="wizardReset()">← Start Over</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- ADVANCED MANUAL SETUP -->
+    <div class="collapsible fade-in" style="margin-top:2rem">
+      <button class="collapsible-toggle" onclick="toggleCollapsible(this)">
+        <span>⚙️ Advanced: Manual setup</span>
+        <span class="arrow">▼</span>
+      </button>
+      <div class="collapsible-content">
+        <div class="code-block" style="margin-top:1rem">
+          <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre>git clone https://github.com/w-3-art/genius-team.git my-awesome-app
+cd my-awesome-app
+./scripts/setup.sh</pre>
+        </div>
+      </div>
+    </div>
+    
+    <p style="color:var(--text2);margin-top:2rem;font-size:.85rem" class="fade-in">
+      <strong>Requirements:</strong> Claude Code (latest) · jq · Git · Node.js 18+
+    </p>
+  </div>
+</section>
+
+<!-- UPGRADE SECTION -->
+<section id="upgrade" class="upgrade-section">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-label">Upgrading from v9?</div>
+      <div class="section-title">Get v11.0 in one command</div>
+    </div>
+    
+    <div class="fade-in">
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">bash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+        <pre>bash &lt;(curl -fsSL https://raw.githubusercontent.com/w-3-art/genius-team/main/scripts/upgrade.sh)</pre>
+      </div>
+      
+      <p style="color:var(--text2);font-size:.9rem;margin-bottom:1rem">Or from inside Claude Code:</p>
+      
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">Claude Code</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+        <pre>/genius-upgrade</pre>
+      </div>
+      
+      <div class="whats-new">
+        <h4>What's new in v11.0:</h4>
+        <ul>
+          <li>🎮 <strong>12 Interactive Playgrounds</strong> — Visual decision-making for each phase</li>
+          <li>🛡️ <strong>Anti-Drift Guard</strong> — Keeps Claude on track, prevents going off-rails</li>
+          <li>🧠 <strong>Persistent Memory</strong> — Nothing is ever forgotten between sessions</li>
+          <li>🔄 <strong>/genius-upgrade</strong> — One command updates for future versions</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-label">Skills</div>
+      <div class="section-title">21+ specialized agents</div>
+      <div class="section-sub">Each skill is a domain expert. Together, they're your AI product team.</div>
+    </div>
+    <div class="skills-grid fade-in">
+      <div class="skill-item" onclick="openModal('skill-team')"><span class="skill-icon">🧠</span><span class="skill-name">genius-team</span></div>
+      <div class="skill-item" onclick="openModal('skill-interviewer')"><span class="skill-icon">🎤</span><span class="skill-name">genius-interviewer</span></div>
+      <div class="skill-item" onclick="openModal('skill-pma')"><span class="skill-icon">📊</span><span class="skill-name">genius-product-market-analyst</span></div>
+      <div class="skill-item" onclick="openModal('skill-specs')"><span class="skill-icon">📋</span><span class="skill-name">genius-specs</span></div>
+      <div class="skill-item" onclick="openModal('skill-designer')"><span class="skill-icon">🎨</span><span class="skill-name">genius-designer</span></div>
+      <div class="skill-item" onclick="openModal('skill-marketer')"><span class="skill-icon">📣</span><span class="skill-name">genius-marketer</span></div>
+      <div class="skill-item" onclick="openModal('skill-copywriter')"><span class="skill-icon">✍️</span><span class="skill-name">genius-copywriter</span></div>
+      <div class="skill-item" onclick="openModal('skill-integration')"><span class="skill-icon">🔗</span><span class="skill-name">genius-integration-guide</span></div>
+      <div class="skill-item" onclick="openModal('skill-architect')"><span class="skill-icon">🏗️</span><span class="skill-name">genius-architect</span></div>
+      <div class="skill-item" onclick="openModal('skill-orchestrator')"><span class="skill-icon">🎯</span><span class="skill-name">genius-orchestrator</span></div>
+      <div class="skill-item" onclick="openModal('skill-dev')"><span class="skill-icon">⚡</span><span class="skill-name">genius-dev</span></div>
+      <div class="skill-item" onclick="openModal('skill-qa')"><span class="skill-icon">✅</span><span class="skill-name">genius-qa</span></div>
+      <div class="skill-item" onclick="openModal('skill-qa-micro')"><span class="skill-icon">🔍</span><span class="skill-name">genius-qa-micro</span></div>
+      <div class="skill-item" onclick="openModal('skill-debugger')"><span class="skill-icon">🐛</span><span class="skill-name">genius-debugger</span></div>
+      <div class="skill-item" onclick="openModal('skill-reviewer')"><span class="skill-icon">👀</span><span class="skill-name">genius-reviewer</span></div>
+      <div class="skill-item" onclick="openModal('skill-security')"><span class="skill-icon">🔒</span><span class="skill-name">genius-security</span></div>
+      <div class="skill-item" onclick="openModal('skill-deployer')"><span class="skill-icon">🚀</span><span class="skill-name">genius-deployer</span></div>
+      <div class="skill-item" onclick="openModal('skill-memory')"><span class="skill-icon">💾</span><span class="skill-name">genius-memory</span></div>
+      <div class="skill-item" onclick="openModal('skill-onboarding')"><span class="skill-icon">👋</span><span class="skill-name">genius-onboarding</span></div>
+      <div class="skill-item" onclick="openModal('skill-test-assistant')"><span class="skill-icon">🧪</span><span class="skill-name">genius-test-assistant</span></div>
+      <div class="skill-item" onclick="openModal('skill-optimizer')"><span class="skill-icon">⚙️</span><span class="skill-name">genius-team-optimizer</span></div>
+      <div class="skill-item" onclick="openModal('skill-updater')"><span class="skill-icon">🔄</span><span class="skill-name">genius-updater</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ SECTION -->
+<section id="faq" style="background:var(--bg2)">
+  <div class="container">
+    <div class="fade-in">
+      <div class="section-label">FAQ & Troubleshooting</div>
+      <div class="section-title">Common questions</div>
+    </div>
+    
+    <div class="faq-grid fade-in">
+      <div class="faq-item">
+        <h4>❓ I get "command not found: claude"</h4>
+        <p>Claude Code CLI isn't installed. Run: <code>curl -fsSL https://claude.ai/install.sh | bash</code> then restart your terminal. For Codex: <code>npm install -g @openai/codex</code>.</p>
+      </div>
+      
+      <div class="faq-item">
+        <h4>❓ I get "permission denied"</h4>
+        <p>The script needs execute permission. Try: <code>chmod +x scripts/setup.sh</code> or simply run with <code>bash scripts/setup.sh</code></p>
+      </div>
+      
+      <div class="faq-item">
+        <h4>❓ What is a terminal?</h4>
+        <p>It's the app where you type commands. On Mac: search "Terminal". On Windows: use WSL or Git Bash. On VS Code: press <code>Ctrl+`</code> to open it.</p>
+      </div>
+      
+      <div class="faq-item">
+        <h4>❓ The command says "my-project" but I want a different name</h4>
+        <p>Replace "my-project" with YOUR project name! Example: <code>...create.sh) booking-app --engine=claude</code>. No spaces, use dashes.</p>
+      </div>
+
+      <div class="faq-item">
+        <h4>❓ Which engine should I choose?</h4>
+        <p><strong>Claude Code</strong> if you already use Claude. <strong>Codex CLI</strong> if you prefer OpenAI. <strong>Dual Mode</strong> if you want both — Claude builds, Codex reviews, they challenge each other for the best result.</p>
+      </div>
+      
+      <div class="faq-item">
+        <h4>❓ How does Dual Mode work?</h4>
+        <p>Claude Code acts as Builder (implements features), while Codex CLI acts as Challenger (reviews and critiques). They iterate via shared files in <code>.genius/</code> until both agree the code is solid.</p>
+      </div>
+      
+      <div class="faq-item">
+        <h4>❓ AI seems stuck or keeps repeating</h4>
+        <p>Run <code>/guard-check</code> to see if something went wrong. If needed, <code>/guard-recover</code> gets you back on track. Works with both Claude and Codex.</p>
+      </div>
+      
+      <div class="faq-item">
+        <h4>❓ I closed the terminal and lost my progress</h4>
+        <p>No worries! Just <code>cd</code> back to your project folder, run <code>claude</code> (or <code>codex</code>), then <code>/continue</code>. The memory system in <code>.genius/</code> remembers everything.</p>
+      </div>
+      
+      <div class="faq-item">
+        <h4>❓ Do I need a paid subscription?</h4>
+        <p>Yes — Claude Code requires a Claude Pro or API subscription (<a href="https://claude.ai/pricing" target="_blank">claude.ai/pricing</a>). Codex CLI requires an OpenAI account. Both have free trials.</p>
+      </div>
+      
+      <div class="faq-item">
+        <h4>❓ How do I update to a new version?</h4>
+        <p>Run <code>/genius-upgrade</code> inside your project. Or from the terminal: <code>bash &lt;(curl -fsSL .../scripts/upgrade.sh)</code></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-links">
+      <a href="https://github.com/w-3-art/genius-team" target="_blank">GitHub</a>
+      <a href="https://github.com/w-3-art/genius-team/blob/main/LICENSE" target="_blank">MIT License</a>
+      <a href="https://github.com/w-3-art/genius-team/blob/main/docs/GETTING-STARTED.md" target="_blank">Docs</a>
+    </div>
+    <p>Built with 🧠 <strong>Genius Team v11.0</strong> — Multi-Engine: Claude + Codex + Dual Mode</p>
+  </div>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" onclick="closeModal()">
+  <div class="modal-card" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-icon" id="modalIcon"></div>
+    <h2 class="modal-title" id="modalTitle"></h2>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<!-- CHAT WIDGET -->
+<div class="chat-widget" id="chatWidget">
+  <button class="chat-toggle" onclick="toggleChat()" aria-label="Open chat">
+    <span class="chat-icon">💬</span>
+    <span class="chat-label">Ask Genius</span>
+  </button>
+  <div class="chat-window" id="chatWindow">
+    <div class="chat-header">
+      <div class="chat-header-info">
+        <span class="chat-header-icon">🧠</span>
+        <span>Genius Team Assistant</span>
+      </div>
+      <button class="chat-close" onclick="toggleChat()" aria-label="Close chat">×</button>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+      <div class="chat-message assistant">
+        <div class="message-content">Hi! I'm the Genius Team Assistant. Ask me anything about installing or using Genius Team! 🚀</div>
+      </div>
+    </div>
+    <div class="chat-input-container">
+      <input type="text" id="chatInput" placeholder="Ask about installation, features..." onkeypress="handleChatKeypress(event)">
+      <button class="chat-send" onclick="sendChatMessage()" aria-label="Send message">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Fade-in on scroll
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }});
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+
+// Switch install mode
+function switchInstallMode(mode, btn) {
+  document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  ['cli','ide','omni','dual'].forEach(m => {
+    const el = document.getElementById('install-' + m);
+    if (el) el.style.display = m === mode ? 'block' : 'none';
+  });
+}
+
+// Update project name dynamically
+function updateProjectName(value) {
+  const name = value.trim().replace(/\s+/g, '-').toLowerCase() || 'my-awesome-app';
+  document.querySelectorAll('.project-name-placeholder').forEach(el => {
+    el.textContent = name;
+  });
+}
+
+// Copy code
+function copyCode(btn) {
+  const pre = btn.closest('.code-block').querySelector('pre');
+  navigator.clipboard.writeText(pre.textContent).then(() => {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+// Close banner
+function closeBanner() {
+  const banner = document.getElementById('updateBanner');
+  banner.classList.add('hidden');
+  localStorage.setItem('bannerClosed', 'v11');
+}
+
+// Check if banner was closed
+if (localStorage.getItem('bannerClosed') === 'v11') {
+  document.getElementById('updateBanner').classList.add('hidden');
+}
+
+// Toggle collapsible
+function toggleCollapsible(btn) {
+  btn.classList.toggle('open');
+  const content = btn.nextElementSibling;
+  content.classList.toggle('open');
+}
+
+// Chat functionality
+let chatHistory = [];
+
+function toggleChat() {
+  const chatWindow = document.getElementById('chatWindow');
+  chatWindow.classList.toggle('open');
+  if (chatWindow.classList.contains('open')) {
+    document.getElementById('chatInput').focus();
+  }
+}
+
+function handleChatKeypress(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendChatMessage();
+  }
+}
+
+async function sendChatMessage() {
+  const input = document.getElementById('chatInput');
+  const message = input.value.trim();
+  if (!message) return;
+
+  const messagesContainer = document.getElementById('chatMessages');
+  
+  // Add user message
+  const userDiv = document.createElement('div');
+  userDiv.className = 'chat-message user';
+  userDiv.innerHTML = `<div class="message-content">${escapeHtml(message)}</div>`;
+  messagesContainer.appendChild(userDiv);
+  
+  // Clear input
+  input.value = '';
+  
+  // Add to history
+  chatHistory.push({ role: 'user', content: message });
+  
+  // Show typing indicator
+  const typingDiv = document.createElement('div');
+  typingDiv.className = 'chat-message assistant';
+  typingDiv.id = 'typingIndicator';
+  typingDiv.innerHTML = `<div class="typing-indicator"><span></span><span></span><span></span></div>`;
+  messagesContainer.appendChild(typingDiv);
+  messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  
+  // Disable send button
+  document.querySelector('.chat-send').disabled = true;
+
+  try {
+    const response = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        message, 
+        history: chatHistory.slice(-10) 
+      }),
+    });
+
+    const data = await response.json();
+    
+    // Remove typing indicator
+    document.getElementById('typingIndicator')?.remove();
+    
+    if (data.error) {
+      addAssistantMessage('Sorry, I encountered an error. Please try again or check the FAQ section below.');
+    } else {
+      addAssistantMessage(data.message);
+      chatHistory.push({ role: 'assistant', content: data.message });
+    }
+  } catch (error) {
+    document.getElementById('typingIndicator')?.remove();
+    addAssistantMessage('Sorry, I couldn\'t connect. Please check your internet connection and try again.');
+  }
+  
+  document.querySelector('.chat-send').disabled = false;
+}
+
+function addAssistantMessage(text) {
+  const messagesContainer = document.getElementById('chatMessages');
+  const assistantDiv = document.createElement('div');
+  assistantDiv.className = 'chat-message assistant';
+  // Simple markdown-like formatting for code
+  const formattedText = text
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/\n/g, '<br>');
+  assistantDiv.innerHTML = `<div class="message-content">${formattedText}</div>`;
+  messagesContainer.appendChild(assistantDiv);
+  messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// Close mobile nav on link click
+document.querySelectorAll('.nav-links a').forEach(a => {
+  a.addEventListener('click', () => document.querySelector('.nav-links').classList.remove('open'));
+});
+
+// ==================== WIZARD ====================
+const wizardState = {
+  step: 0,
+  projectType: 'new',
+  projectName: 'my-awesome-app',
+  environment: 'cli',
+  engine: 'claude'
+};
+
+function validateProjectName(input) {
+  const value = input.value.trim();
+  const validation = document.getElementById('nameValidation');
+  const nextBtn = document.getElementById('step1Next');
+  
+  // Valid: lowercase, numbers, dashes, no spaces, no consecutive dashes
+  const isValid = /^[a-z][a-z0-9-]*[a-z0-9]$|^[a-z]$/.test(value) && !value.includes('--');
+  const isEmpty = value.length === 0;
+  
+  if (isEmpty) {
+    input.classList.remove('valid', 'invalid');
+    validation.textContent = '';
+    wizardState.projectName = 'my-awesome-app';
+    nextBtn.disabled = false;
+  } else if (isValid) {
+    input.classList.remove('invalid');
+    input.classList.add('valid');
+    validation.textContent = '✓';
+    wizardState.projectName = value;
+    nextBtn.disabled = false;
+  } else {
+    input.classList.remove('valid');
+    input.classList.add('invalid');
+    validation.textContent = '✗';
+    nextBtn.disabled = true;
+  }
+}
+
+function selectOption(btn, type) {
+  const parent = btn.closest('.wizard-options');
+  parent.querySelectorAll('.wizard-option').forEach(o => o.classList.remove('selected'));
+  btn.classList.add('selected');
+  wizardState[type] = btn.dataset.value;
+}
+
+function updateProgress() {
+  const progressBar = document.querySelector('.wizard-progress');
+  
+  // Hide progress bar on step 0 (project type selection)
+  if (wizardState.step === 0) {
+    progressBar.style.opacity = '0';
+    progressBar.style.pointerEvents = 'none';
+    return;
+  }
+  progressBar.style.opacity = '1';
+  progressBar.style.pointerEvents = '';
+
+  // For existing projects, step 1 is skipped — treat it as completed
+  const effectiveStep = (wizardState.projectType === 'existing' && wizardState.step >= 2)
+    ? wizardState.step + 1  // shift visual progress forward since step 1 is skipped
+    : wizardState.step;
+
+  document.querySelectorAll('.progress-step').forEach((step, i) => {
+    const stepNum = i + 1;
+    step.classList.remove('active', 'completed');
+    if (stepNum === effectiveStep) {
+      step.classList.add('active');
+    } else if (stepNum < effectiveStep) {
+      step.classList.add('completed');
+    }
+  });
+  
+  // Update progress lines
+  document.getElementById('progressFill1').style.width = effectiveStep > 1 ? '100%' : '0';
+  document.getElementById('progressFill2').style.width = effectiveStep > 2 ? '100%' : '0';
+}
+
+function wizardNext() {
+  if (wizardState.step >= 3) return;
+  
+  const currentStep = document.getElementById(`wizardStep${wizardState.step}`);
+  currentStep.classList.add('exit-left');
+  
+  setTimeout(() => {
+    currentStep.classList.remove('active', 'exit-left');
+    
+    // Step 0 → skip step 1 for existing projects
+    if (wizardState.step === 0) {
+      wizardState.step = wizardState.projectType === 'existing' ? 2 : 1;
+    } else {
+      wizardState.step++;
+    }
+    
+    updateProgress();
+    const nextStep = document.getElementById(`wizardStep${wizardState.step}`);
+    nextStep.classList.add('active');
+  }, 200);
+}
+
+function wizardBack() {
+  if (wizardState.step <= 0) return;
+  
+  const currentStep = document.getElementById(`wizardStep${wizardState.step}`);
+  currentStep.classList.remove('active');
+  
+  // From step 2: go to step 0 for existing projects (step 1 is skipped)
+  if (wizardState.step === 2 && wizardState.projectType === 'existing') {
+    wizardState.step = 0;
+  } else {
+    wizardState.step--;
+  }
+  
+  updateProgress();
+  const prevStep = document.getElementById(`wizardStep${wizardState.step}`);
+  prevStep.classList.add('active');
+}
+
+function wizardGenerate() {
+  const currentStep = document.getElementById('wizardStep3');
+  currentStep.classList.add('exit-left');
+  
+  setTimeout(() => {
+    currentStep.classList.remove('active', 'exit-left');
+    
+    // Generate command
+    let flags = [];
+    if (wizardState.engine !== 'claude') flags.push(`--engine=${wizardState.engine}`);
+    if (wizardState.environment !== 'cli') flags.push(`--mode=${wizardState.environment}`);
+    const flagStr = flags.length > 0 ? ` ${flags.join(' ')}` : '';
+
+    let fullCmd, thenRunHtml;
+
+    if (wizardState.projectType === 'existing') {
+      // Existing project: use add.sh, run from inside the project
+      fullCmd = `bash <(curl -fsSL https://raw.githubusercontent.com/w-3-art/genius-team/main/scripts/add.sh)${flagStr}`;
+      
+      // "Then run" for existing (no cd needed)
+      if (wizardState.engine === 'codex') {
+        thenRunHtml = `<strong>Then run:</strong> <code>codex</code>`;
+      } else if (wizardState.engine === 'dual') {
+        thenRunHtml = `<strong>Then run:</strong> <code>claude</code>
+          <div class="dual-note">Claude builds, Codex challenges — they iterate until both agree.</div>`;
+      } else {
+        thenRunHtml = `<strong>Then run:</strong> <code>claude</code>, then <code>/genius-start</code>`;
+      }
+
+      // Prepend a "cd first" note in the result box
+      document.getElementById('resultCommand').dataset.note = `# First, navigate to your project:\ncd your-project\n\n# Then run:`;
+    } else {
+      // New project: use create.sh
+      fullCmd = `bash <(curl -fsSL https://raw.githubusercontent.com/w-3-art/genius-team/main/scripts/create.sh) ${wizardState.projectName}${flagStr}`;
+      document.getElementById('resultCommand').dataset.note = '';
+
+      if (wizardState.engine === 'claude') {
+        thenRunHtml = `<strong>Then run:</strong> <code>cd ${wizardState.projectName} && claude</code>`;
+      } else if (wizardState.engine === 'codex') {
+        thenRunHtml = `<strong>Then run:</strong> <code>cd ${wizardState.projectName} && codex</code>`;
+      } else {
+        thenRunHtml = `<strong>Then run:</strong> <code>cd ${wizardState.projectName} && claude</code>
+          <div class="dual-note">Claude builds, Codex challenges — they iterate until both agree.</div>`;
+      }
+    }
+
+    // Show cd-note for existing projects
+    const noteEl = document.getElementById('resultNote');
+    if (wizardState.projectType === 'existing') {
+      noteEl.style.display = 'block';
+    } else {
+      noteEl.style.display = 'none';
+    }
+    
+    document.getElementById('resultCommand').textContent = fullCmd;
+    document.getElementById('thenRun').innerHTML = thenRunHtml;
+    
+    // Update progress to show completed
+    wizardState.step = 4;
+    document.querySelectorAll('.progress-step').forEach(s => s.classList.add('completed'));
+    document.querySelectorAll('.progress-fill').forEach(f => f.style.width = '100%');
+    
+    const resultStep = document.getElementById('wizardResult');
+    resultStep.classList.add('active');
+  }, 200);
+}
+
+function copyWizardCommand() {
+  const cmd = document.getElementById('resultCommand').textContent;
+  navigator.clipboard.writeText(cmd).then(() => {
+    const btn = document.querySelector('.wizard-copy-btn');
+    btn.classList.add('copied');
+    btn.querySelector('.copy-text').textContent = 'Copied!';
+    btn.querySelector('.copy-icon').textContent = '✓';
+    
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.querySelector('.copy-text').textContent = 'Copy';
+      btn.querySelector('.copy-icon').textContent = '📋';
+    }, 2500);
+  });
+}
+
+// ==================== PLAYGROUND HOVER PREVIEW ====================
+(function() {
+  const panel = document.createElement('div');
+  panel.id = 'pg-float-preview';
+  panel.innerHTML = `<img id="pg-float-img" src="" alt=""><div id="pg-float-preview-footer"><div id="pg-float-preview-title"></div><div id="pg-float-preview-desc"></div></div>`;
+  document.body.appendChild(panel);
+
+  const img = panel.querySelector('#pg-float-img');
+  const titleEl = panel.querySelector('#pg-float-preview-title');
+  const descEl = panel.querySelector('#pg-float-preview-desc');
+  let hideTimer;
+
+  function showPreview(card) {
+    clearTimeout(hideTimer);
+    img.src = card.dataset.preview;
+    titleEl.textContent = card.querySelector('.pg-card-title').textContent;
+    descEl.textContent = card.dataset.desc;
+
+    const rect = card.getBoundingClientRect();
+    const panelW = 380;
+    // Center the panel horizontally on the card, clamped to viewport
+    let left = rect.left + rect.width / 2 - panelW / 2;
+    left = Math.max(8, Math.min(left, window.innerWidth - panelW - 8));
+    // Panel bottom aligns with card top (grows upward)
+    const bottom = window.innerHeight - rect.top + 8;
+
+    panel.style.left = left + 'px';
+    panel.style.bottom = bottom + 'px';
+    panel.style.top = 'auto';
+
+    requestAnimationFrame(() => panel.classList.add('visible'));
+  }
+
+  function hidePreview() {
+    hideTimer = setTimeout(() => panel.classList.remove('visible'), 80);
+  }
+
+  document.querySelectorAll('.pg-card').forEach(card => {
+    card.addEventListener('mouseenter', () => showPreview(card));
+    card.addEventListener('mouseleave', hidePreview);
+  });
+
+  panel.addEventListener('mouseenter', () => clearTimeout(hideTimer));
+  panel.addEventListener('mouseleave', hidePreview);
+})();
+
+// ==================== MODAL ====================
+const modalData = {
+  // FEATURES
+  'feature-agent-teams': {
+    icon: '🤖', title: 'Agent Teams',
+    body: `<p>Genius Team uses Claude Code's experimental <strong>Agent Teams</strong> feature — a multi-agent architecture where a Lead Claude orchestrates specialized worker agents running in parallel.</p>
+    <p><strong>How it works:</strong></p>
+    <ul>
+      <li>The Lead agent holds the project context and delegates tasks to specialists</li>
+      <li>Each worker agent operates in its own <code>git worktree</code> (isolated branch)</li>
+      <li>Workers execute in parallel — architecture, dev, QA all running simultaneously</li>
+      <li>Conflicts are resolved by the Lead before merging back to main</li>
+    </ul>
+    <p><strong>Why it matters:</strong> Instead of one AI doing everything sequentially, your team of AIs works in parallel — like a real engineering team. 3x-5x faster on complex projects.</p>
+    <span class="tag">CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS</span><span class="tag">git worktree</span><span class="tag">parallel execution</span>`
+  },
+  'feature-playgrounds': {
+    icon: '🎮', title: 'Interactive Playgrounds',
+    body: `<p>12 HTML interfaces that turn complex decisions into guided, visual experiences. Every major project phase has its own playground.</p>
+    <p><strong>What makes them different:</strong></p>
+    <ul>
+      <li>Run locally in your browser — no external services</li>
+      <li>Load your current project state automatically from <code>.genius/</code></li>
+      <li>Decisions you make are saved back to memory for the AI to reference</li>
+      <li>Designed for <em>humans and AI</em> to use together</li>
+    </ul>
+    <p><strong>Available playgrounds:</strong> Project Canvas, Market Simulator, Architecture Explorer, Stack Configurator, Design System Builder, GTM Simulator, Copy A/B Tester, Progress Dashboard, Risk Matrix, User Journey Builder, Deploy Checklist, Test Coverage Map.</p>
+    <span class="tag">12 playgrounds</span><span class="tag">local HTML</span><span class="tag">state-aware</span>`
+  },
+  'feature-guard': {
+    icon: '🛡️', title: 'Anti-Drift Guard',
+    body: `<p>The most common failure mode with AI coding: the AI starts implementing the right thing, then slowly drifts off-plan. Genius Team's guard system prevents this.</p>
+    <p><strong>How it works:</strong></p>
+    <ul>
+      <li><code>GENIUS_GUARD.md</code> defines the project boundaries and non-negotiables</li>
+      <li>Pre/post hooks validate every action against the guard rules</li>
+      <li>Auto-detection when responses start drifting from the established plan</li>
+      <li><code>/guard-check</code> — See current compliance status at any time</li>
+      <li><code>/guard-recover</code> — Force realignment to the original plan</li>
+    </ul>
+    <p>Think of it as guardrails on a mountain road — invisible when everything's fine, life-saving when you need them.</p>
+    <span class="tag">GENIUS_GUARD.md</span><span class="tag">auto-detection</span><span class="tag">hooks</span>`
+  },
+  'feature-memory': {
+    icon: '🧠', title: 'Persistent Memory',
+    body: `<p>AI sessions are stateless by default. Genius Team solves this with a file-based memory system that persists everything between sessions.</p>
+    <p><strong>Memory lives in <code>.genius/memory/</code>:</strong></p>
+    <ul>
+      <li><code>decisions.json</code> — Every architectural decision with rationale</li>
+      <li><code>patterns.json</code> — Code conventions and patterns adopted for this project</li>
+      <li><code>progress.json</code> — Task tracking, milestones, velocity</li>
+      <li><code>errors.json</code> — Bugs encountered and their solutions (never solve the same bug twice)</li>
+      <li><code>BRIEFING.md</code> — Auto-generated summary loaded at the start of every session</li>
+    </ul>
+    <p>Commands: <code>/memory-capture</code>, <code>/memory-rollup</code>, <code>/memory-recover</code></p>
+    <span class="tag">file-based</span><span class="tag">no database</span><span class="tag">session-persistent</span>`
+  },
+  'feature-qa': {
+    icon: '🔄', title: 'Mandatory QA Loop',
+    body: `<p>Every single task in Genius Team goes through a mandatory quality loop before being considered done. Nothing ships without it.</p>
+    <p><strong>The loop:</strong></p>
+    <ul>
+      <li>Dev implements the feature</li>
+      <li>genius-qa-micro runs a fast first-pass check</li>
+      <li>If issues found → back to Dev for fixes</li>
+      <li>genius-qa runs full QA validation</li>
+      <li>Only then: ✅ task marked complete</li>
+    </ul>
+    <p>This catches bugs early, when they're cheap to fix, instead of discovering them in production. The loop is enforced at the orchestration level — agents literally cannot skip it.</p>
+    <span class="tag">dev→qa-micro→fix→re-qa</span><span class="tag">enforced</span><span class="tag">zero-skip</span>`
+  },
+  'feature-tokens': {
+    icon: '💰', title: 'Save-Token Mode',
+    body: `<p>Running a full genius-team session with Opus for all agents can be expensive. Save-Token Mode intelligently routes roles to cheaper models without sacrificing quality where it matters.</p>
+    <p><strong>How routing works:</strong></p>
+    <ul>
+      <li><strong>Keeps Opus:</strong> Lead, Architect — need deep reasoning</li>
+      <li><strong>Switches to Sonnet:</strong> Dev, QA, Security, Deployer — high-volume, execution-focused</li>
+      <li><strong>Uses Haiku:</strong> Memory, logging, formatting — pure throughput</li>
+    </ul>
+    <p>Toggle with <code>/save-tokens</code>. Typical savings: 40-60% on a full project run.</p>
+    <span class="tag">/save-tokens</span><span class="tag">Opus → Sonnet routing</span><span class="tag">40-60% savings</span>`
+  },
+  // SKILLS
+  'skill-team': { icon: '🧠', title: 'genius-team', body: `<p>The <strong>Lead Orchestrator</strong>. This is the entry point and brain of every Genius Team session. It understands your project context, decides which specialist to activate next, and ensures coherent progression through the build pipeline.</p><ul><li>Routes requests to the right specialist automatically</li><li>Maintains the global project context across all agents</li><li>Prevents context fragmentation between specializations</li></ul>` },
+  'skill-interviewer': { icon: '🎤', title: 'genius-interviewer', body: `<p>Conducts structured <strong>product discovery interviews</strong> to surface what actually needs to be built before writing a single line of code.</p><ul><li>Extracts user needs, pain points, and goals through guided questions</li><li>Produces a structured Discovery Report</li><li>Identifies assumptions that need validation</li><li>Feeds directly into the specs pipeline</li></ul>` },
+  'skill-pma': { icon: '📊', title: 'genius-product-market-analyst', body: `<p>Analyzes the <strong>market landscape</strong> to ensure you're building something with real demand and a differentiated position.</p><ul><li>Competitive analysis and positioning map</li><li>TAM/SAM/SOM sizing</li><li>Identifies underserved segments and whitespace opportunities</li><li>Outputs a Market Report used by the Specs and Marketing agents</li></ul>` },
+  'skill-specs': { icon: '📋', title: 'genius-specs', body: `<p>Transforms discovery and research into <strong>precise, actionable technical specifications</strong> that the dev agents can actually implement.</p><ul><li>User stories with acceptance criteria</li><li>Functional and non-functional requirements</li><li>API contracts and data models</li><li>Dependencies and constraints clearly stated</li></ul>` },
+  'skill-designer': { icon: '🎨', title: 'genius-designer', body: `<p>Makes <strong>UI/UX decisions</strong> with real constraints in mind — not just aesthetic choices but functional design that works.</p><ul><li>Component hierarchy and layout decisions</li><li>Design system choices (colors, typography, spacing)</li><li>Interaction patterns and state management</li><li>Works with the Design System Builder playground</li></ul>` },
+  'skill-marketer': { icon: '📣', title: 'genius-marketer', body: `<p>Develops your <strong>go-to-market strategy</strong> and marketing framework to ensure your product reaches the right audience.</p><ul><li>Positioning and messaging strategy</li><li>Channel selection and launch plan</li><li>Growth hypotheses and acquisition funnels</li><li>Works with the GTM Simulator playground</li></ul>` },
+  'skill-copywriter': { icon: '✍️', title: 'genius-copywriter', body: `<p>Creates <strong>compelling copy</strong> for all touchpoints — from landing pages to in-app messaging.</p><ul><li>Landing page copy with conversion in mind</li><li>Onboarding sequences and empty states</li><li>Email templates and notifications</li><li>Works with the Copy A/B Tester playground</li></ul>` },
+  'skill-integration': { icon: '🔗', title: 'genius-integration-guide', body: `<p>Maps out all <strong>third-party integrations</strong> before implementation, preventing surprises mid-build.</p><ul><li>API authentication flows and rate limits</li><li>Webhook setup and event handling</li><li>SDK selection and wrapper design</li><li>Integration test strategies</li></ul>` },
+  'skill-architect': { icon: '🏗️', title: 'genius-architect', body: `<p>Designs the <strong>system architecture</strong> with scalability, maintainability, and performance as first-class concerns.</p><ul><li>Database schema and data modeling</li><li>Service boundaries and API structure</li><li>Caching strategies and performance patterns</li><li>Works with the Architecture Explorer playground</li></ul>` },
+  'skill-orchestrator': { icon: '🎯', title: 'genius-orchestrator', body: `<p>Coordinates <strong>complex multi-step workflows</strong> that require sequencing across multiple agents with dependencies.</p><ul><li>Manages task queues and agent dependencies</li><li>Handles parallel execution coordination</li><li>Resolves conflicts between agent outputs</li><li>Escalates blockers to the Lead</li></ul>` },
+  'skill-dev': { icon: '⚡', title: 'genius-dev', body: `<p>The <strong>core implementation engine</strong>. Writes production-quality code following your project's established patterns.</p><ul><li>Implements features from specs</li><li>Follows the code patterns in <code>patterns.json</code></li><li>Integrates with existing codebase without breaking things</li><li>Always feeds output to QA before marking done</li></ul>` },
+  'skill-qa': { icon: '✅', title: 'genius-qa', body: `<p>Full <strong>quality assurance cycle</strong> — not just a quick check, but comprehensive validation against requirements.</p><ul><li>Functional testing against acceptance criteria</li><li>Edge case and regression identification</li><li>Performance baseline checks</li><li>Produces a QA Report with pass/fail details</li></ul>` },
+  'skill-qa-micro': { icon: '🔍', title: 'genius-qa-micro', body: `<p>A <strong>fast, lightweight QA pass</strong> designed to catch obvious issues immediately after implementation, before the full QA cycle.</p><ul><li>Syntax and logic sanity checks</li><li>Basic functionality validation</li><li>Catches 80% of bugs in 20% of the time</li><li>Runs after every Dev task automatically</li></ul>` },
+  'skill-debugger': { icon: '🐛', title: 'genius-debugger', body: `<p>Systematic <strong>bug diagnosis</strong> that goes beyond "try this" — it traces, isolates, and explains root causes.</p><ul><li>Error trace analysis and reproduction</li><li>Root cause identification (not just symptoms)</li><li>Fix proposal with explanation</li><li>Updates <code>errors.json</code> memory so the bug is never repeated</li></ul>` },
+  'skill-reviewer': { icon: '👀', title: 'genius-reviewer', body: `<p><strong>Code review</strong> focused on long-term maintainability, not just "does it work today?"</p><ul><li>Code quality, readability, and structure</li><li>Security anti-patterns and data exposure risks</li><li>Performance bottleneck identification</li><li>Alignment with project patterns and conventions</li></ul>` },
+  'skill-security': { icon: '🔒', title: 'genius-security', body: `<p>Dedicated <strong>security audit</strong> before any deployment. Not an afterthought — a full pass.</p><ul><li>OWASP Top 10 checks</li><li>Authentication and authorization flows</li><li>Data exposure and injection vulnerabilities</li><li>Dependency vulnerability scan</li></ul>` },
+  'skill-deployer': { icon: '🚀', title: 'genius-deployer', body: `<p>Handles the full <strong>deployment pipeline</strong> — from environment config to going live.</p><ul><li>CI/CD setup and configuration</li><li>Environment variables and secrets management</li><li>Cloud provider setup (Vercel, Railway, etc.)</li><li>Works with the Deploy Checklist playground</li></ul>` },
+  'skill-memory': { icon: '💾', title: 'genius-memory', body: `<p>Manages the <strong>project memory system</strong> — captures, rolls up, and recovers the AI's project knowledge.</p><ul><li><code>/memory-capture</code> — Save current session insights</li><li><code>/memory-rollup</code> — Compress and summarize memory files</li><li><code>/memory-recover</code> — Restore memory from last checkpoint</li><li>Auto-generates BRIEFING.md at session start</li></ul>` },
+  'skill-onboarding': { icon: '👋', title: 'genius-onboarding', body: `<p>Helps <strong>new contributors</strong> (human or AI) quickly understand the project without reading everything.</p><ul><li>Produces an onboarding guide from project memory</li><li>Explains architecture decisions and why they were made</li><li>Lists current conventions and patterns</li><li>Runs automatically on first session of a new day</li></ul>` },
+  'skill-test-assistant': { icon: '🧪', title: 'genius-test-assistant', body: `<p>Writes and maintains <strong>test suites</strong> across all testing levels.</p><ul><li>Unit tests for isolated functions</li><li>Integration tests for connected services</li><li>E2E test scenarios for user flows</li><li>Works with the Test Coverage Map playground</li></ul>` },
+  'skill-optimizer': { icon: '⚙️', title: 'genius-team-optimizer', body: `<p>Analyzes your team's performance and <strong>suggests process improvements</strong> based on patterns in the project memory.</p><ul><li>Identifies recurring bottlenecks and blockers</li><li>Suggests agent configuration tweaks</li><li>Analyzes token usage and recommends savings</li><li>Runs automatically after major milestones</li></ul>` },
+  'skill-updater': { icon: '🔄', title: 'genius-updater', body: `<p>The <strong>self-update mechanism</strong> — keeps Genius Team current without disrupting your project.</p><ul><li>Checks for new Genius Team versions</li><li>Applies updates to <code>.claude/skills/</code> non-destructively</li><li>Preserves your project-specific customizations</li><li>Command: <code>/genius-upgrade</code></li></ul>` }
+};
+
+function openModal(id) {
+  const data = modalData[id];
+  if (!data) return;
+  document.getElementById('modalIcon').textContent = data.icon;
+  document.getElementById('modalTitle').textContent = data.title;
+  document.getElementById('modalBody').innerHTML = data.body;
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+function wizardReset() {
+  // Reset state
+  wizardState.step = 0;
+  wizardState.projectType = 'new';
+  wizardState.projectName = 'my-awesome-app';
+  wizardState.environment = 'cli';
+  wizardState.engine = 'claude';
+  
+  // Reset UI
+  document.querySelectorAll('.wizard-step').forEach(s => s.classList.remove('active', 'exit-left'));
+  document.getElementById('wizardStep0').classList.add('active');
+  document.getElementById('wizardProjectName').value = '';
+  document.getElementById('wizardProjectName').classList.remove('valid', 'invalid');
+  document.getElementById('nameValidation').textContent = '';
+  document.getElementById('step1Next').disabled = false;
+  document.getElementById('resultNote').style.display = 'none';
+  
+  // Reset options
+  document.querySelectorAll('.wizard-option').forEach(o => o.classList.remove('selected'));
+  document.querySelector('[data-value="new"]').classList.add('selected');
+  document.querySelector('[data-value="cli"]').classList.add('selected');
+  document.querySelector('[data-value="claude"]').classList.add('selected');
+  
+  // Reset progress
+  document.querySelectorAll('.progress-fill').forEach(f => f.style.width = '0');
+  updateProgress();
+}
+</script>
+</body>
+</html>

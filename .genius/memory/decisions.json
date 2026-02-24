@@ -1,0 +1,20 @@
+[
+  {
+    "id": "evt-1771228755049609000-ygjey498720",
+    "type": "decision",
+    "timestamp": "2026-02-16T07:59:15Z",
+    "session_id": "20260216-default",
+    "skill": null,
+    "phase": "NOT_STARTED",
+    "content": "Test decision for memory capture",
+    "metadata": {
+      "reason": "testing",
+      "alternatives": [
+        "none"
+      ]
+    },
+    "tags": [
+      "decision"
+    ]
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "id": "evt-1771228763477057000-tl467u98768",
+    "type": "error",
+    "timestamp": "2026-02-16T07:59:23Z",
+    "session_id": "20260216-default",
+    "skill": null,
+    "phase": "NOT_STARTED",
+    "content": "Build failed on CI",
+    "metadata": {
+      "cause": "missing dependency",
+      "solution": "npm install axios"
+    },
+    "tags": [
+      "error"
+    ]
+  }
+]

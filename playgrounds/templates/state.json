@@ -1,0 +1,18 @@
+{
+  "projectName": "Genius Dashboard Test",
+  "engine": "claude",
+  "currentPhase": "discovery",
+  "phases": {
+    "discovery": {
+      "status": "in-progress",
+      "startedAt": "2026-02-17T17:00:00Z",
+      "completedAt": null
+    },
+    "market": { "status": "pending", "startedAt": null, "completedAt": null },
+    "specs": { "status": "pending", "startedAt": null, "completedAt": null },
+    "design": { "status": "pending", "startedAt": null, "completedAt": null },
+    "dev": { "status": "pending", "startedAt": null, "completedAt": null },
+    "qa": { "status": "pending", "startedAt": null, "completedAt": null },
+    "deploy": { "status": "pending", "startedAt": null, "completedAt": null }
+  }
+}
