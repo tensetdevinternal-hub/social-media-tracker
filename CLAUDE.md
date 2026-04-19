@@ -1,7 +1,4 @@
-# Genius Team v10.0 — CLI Mode
-
-> ⚠️ **MANDATORY**: Read `GENIUS_GUARD.md` before ANY action.
-> This project uses Genius Team. You MUST use the skills, not work standalone.
+# Genius Team v9.0 — CLI Mode
 
 > Your AI product team. From idea to production. Powered by Agent Teams.
 
@@ -15,20 +12,6 @@
 **First time?** Run `/genius-start` to initialize your environment.
 
 **Returning?** Just say what you want to do — your BRIEFING.md has the context.
-
----
-
-## 🚨 ANTI-DRIFT RULES
-
-These rules are **NON-NEGOTIABLE**. Violating them breaks the entire workflow.
-
-1. **NEVER code directly** — always use `genius-dev` subagent
-2. **NEVER skip a skill** — follow the flow in order
-3. **NEVER skip playground generation** — every feature needs a playground
-4. **ALWAYS check `state.json`** before acting
-5. **ALWAYS validate checkpoints** before transitioning to next phase
-
-> If you catch yourself coding, STOP. Spawn genius-dev instead.
 
 ---
 
@@ -58,20 +41,13 @@ Task(
 
 ### Resuming After Interruption
 
-**On resume, follow this EXACT sequence:**
-
-1. **FIRST**: Read `GENIUS_GUARD.md` (mandatory anti-drift rules)
-2. **THEN**: Run `/guard-check` to validate current state
-3. **IF issues**: Run `/guard-recover` to restore last valid state
-4. **FINALLY**: Run `/continue` to pick up where you left off
-
-The Lead reads `plan.md` + `BRIEFING.md` + `state.json` to reconstruct state.
+On resume, the Lead reads `plan.md` + `BRIEFING.md` to reconstruct state. Run `/continue` to pick up where you left off.
 
 ---
 
 ## Agent Teams Protocol
 
-Genius Team v10.0 uses Claude Code Agent Teams (`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`).
+Genius Team v9.0 uses Claude Code Agent Teams (`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`).
 
 - **Lead** (you, the main session) coordinates — never codes directly
 - **Teammates** are spawned via delegate mode (Shift+Tab) with natural language prompts
@@ -114,8 +90,6 @@ No external MCPs required. All memory is file-based in `.genius/memory/`:
 
 ### Auto-loaded Context
 
-@GENIUS_GUARD.md
-@.genius/state.json
 @.genius/memory/BRIEFING.md
 @.claude/plan.md
 
@@ -147,8 +121,6 @@ Toggle with `/save-tokens`. When enabled, high-volume roles (dev, qa-micro, debu
 ---
 
 ## Two Phases
-
-> ⚠️ **Each phase generates MANDATORY artifacts. Do NOT skip them.**
 
 ### Phase 1: IDEATION (Conversational)
 Skills ASK questions. User input expected at checkpoints.
@@ -196,21 +168,6 @@ Then: genius-qa (full audit) → genius-security → genius-deployer
 | `/save-tokens` | Toggle save-token mode |
 | `/update-check` | Check for Claude Code updates |
 | `STOP` / `PAUSE` | Halt autonomous execution |
-
----
-
-## Recovery Commands
-
-| Command | What It Does |
-|---------|-------------|
-| `/guard-check` | Validate current state against GENIUS_GUARD rules |
-| `/guard-recover` | Force recovery to last valid state |
-| `/continue` | Resume from where you left off |
-
-**Usage:**
-- Run `/guard-check` at session start to detect drift
-- If issues found, run `/guard-recover` before continuing
-- Use `/continue` only after state is validated
 
 ---
 

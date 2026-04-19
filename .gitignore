@@ -62,3 +62,4 @@ coverage/
 *.key
 credentials.json
 token.json
+.vercel

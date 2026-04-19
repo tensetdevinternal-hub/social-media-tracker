@@ -34,5 +34,6 @@
       "context": 30
     },
     "sessionLogRetention": 30
-  }
+  },
+  "engine": "claude"
 }
