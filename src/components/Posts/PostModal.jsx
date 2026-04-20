@@ -307,7 +307,7 @@ export default function PostModal({ post, platformName, allAccounts, onSave, onD
             <button
               onClick={handleSave}
               className="px-4 py-1.5 rounded-lg text-xs font-medium transition-colors hover:opacity-80"
-              style={{ backgroundColor: '#1e3a5a', color: '#3b82f6' }}
+              style={{ backgroundColor: '#3b82f6', color: '#fff' }}
             >
               Save
             </button>
