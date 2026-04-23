@@ -42,7 +42,7 @@ export default function App() {
 
   // UI state
   const [viewMode, setViewMode] = useState('title');
-  const [weekSpan, setWeekSpan] = useState(1);
+  const [weekSpan, setWeekSpan] = useState(2);
   const [collapsedPlatforms, setCollapsedPlatforms] = useState({});
 
   // Modal state
