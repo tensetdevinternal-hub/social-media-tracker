@@ -20,7 +20,7 @@ export default function StandardEditor({ content, mediaLink, onChange, charLimit
           value={content}
           onChange={(e) => onChange({ content: e.target.value, mediaLink })}
           placeholder={`Write your ${platformName} post...`}
-          rows={5}
+          rows={8}
           className="w-full px-3 py-2 rounded-lg text-sm outline-none resize-none"
           style={inputStyle}
         />

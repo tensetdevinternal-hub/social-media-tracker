@@ -5,7 +5,6 @@ import { formatDate } from '../../utils/dateUtils';
 import { generateId } from '../../utils/idGenerator';
 import TwitterEditor from './TwitterEditor';
 import StandardEditor from './StandardEditor';
-import CommentsList from '../Comments/CommentsList';
 import TwitterPreview from './TwitterPreview';
 
 export default function PostModal({ post, platformName, allAccounts, onSave, onDelete, onDuplicate, onClose, colors }) {
@@ -19,7 +18,6 @@ export default function PostModal({ post, platformName, allAccounts, onSave, onD
   const [tweets, setTweets] = useState(post.tweets || [{ text: '', mediaLink: '' }]);
   const [content, setContent] = useState(post.content || '');
   const [mediaLink, setMediaLink] = useState(post.mediaLink || '');
-  const [comments, setComments] = useState(post.comments || []);
   const [titleError, setTitleError] = useState(false);
 
   // Preview state
@@ -41,31 +39,9 @@ export default function PostModal({ post, platformName, allAccounts, onSave, onD
       notes,
       captionStatus,
       mediaStatus,
-      comments,
       ...(isTwitter ? { tweets } : { content, mediaLink }),
     };
     onSave(updatedPost);
-  };
-
-  const handleAddComment = ({ author, text }) => {
-    const newComment = {
-      id: generateId(),
-      author,
-      text,
-      timestamp: new Date().toISOString(),
-      resolved: false,
-    };
-    setComments((prev) => [...prev, newComment]);
-  };
-
-  const handleResolveComment = (commentId) => {
-    setComments((prev) =>
-      prev.map((c) => c.id === commentId ? { ...c, resolved: !c.resolved } : c)
-    );
-  };
-
-  const handleDeleteComment = (commentId) => {
-    setComments((prev) => prev.filter((c) => c.id !== commentId));
   };
 
   const handleDuplicateConfirm = () => {
@@ -179,7 +155,7 @@ export default function PostModal({ post, platformName, allAccounts, onSave, onD
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Internal notes (not published)"
-              rows={2}
+              rows={4}
               className="w-full px-3 py-2 rounded-lg text-sm outline-none resize-none"
               style={inputStyle}
             />
@@ -278,19 +254,6 @@ export default function PostModal({ post, platformName, allAccounts, onSave, onD
             />
           )}
 
-          {/* Comments */}
-          <div
-            className="rounded-lg p-3"
-            style={{ backgroundColor: colors.inputBg, border: `1px solid ${colors.borderLight}` }}
-          >
-            <CommentsList
-              comments={comments}
-              onAdd={handleAddComment}
-              onResolve={handleResolveComment}
-              onDelete={handleDeleteComment}
-              colors={colors}
-            />
-          </div>
         </div>
 
         {/* Footer */}

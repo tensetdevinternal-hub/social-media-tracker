@@ -56,7 +56,7 @@ export default function TwitterEditor({ tweets, onChange, charLimit, colors }) {
             value={tweet.text}
             onChange={(e) => handleTweetText(index, e.target.value)}
             placeholder={index === 0 ? "What's happening?" : 'Continue the thread...'}
-            rows={3}
+            rows={6}
             className="w-full px-3 py-2 rounded-lg text-sm outline-none resize-none"
             style={inputStyle}
           />
