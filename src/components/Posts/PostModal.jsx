@@ -13,6 +13,7 @@ export default function PostModal({ post, platformName, allAccounts, onSave, onD
   const isTwitter = platformConfig.type === 'twitter';
 
   const [title, setTitle] = useState(post.title || '');
+  const [notes, setNotes] = useState(post.notes || '');
   const [captionStatus, setCaptionStatus] = useState(post.captionStatus || 'not_started');
   const [mediaStatus, setMediaStatus] = useState(post.mediaStatus || 'not_started');
   const [tweets, setTweets] = useState(post.tweets || [{ text: '', mediaLink: '' }]);
@@ -37,6 +38,7 @@ export default function PostModal({ post, platformName, allAccounts, onSave, onD
     const updatedPost = {
       ...post,
       title: title.trim(),
+      notes,
       captionStatus,
       mediaStatus,
       comments,
@@ -71,6 +73,7 @@ export default function PostModal({ post, platformName, allAccounts, onSave, onD
     const copy = {
       id: generateId(),
       title: title.trim() || post.title,
+      notes,
       captionStatus: 'not_started',
       mediaStatus: 'not_started',
       comments: [],
@@ -165,6 +168,21 @@ export default function PostModal({ post, platformName, allAccounts, onSave, onD
             {titleError && (
               <p className="text-[10px] mt-1" style={{ color: '#ef4444' }}>Title is required</p>
             )}
+          </div>
+
+          {/* Notes */}
+          <div>
+            <label className="block text-xs mb-1 font-medium" style={{ color: colors.textMuted }}>
+              Notes
+            </label>
+            <textarea
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              placeholder="Internal notes (not published)"
+              rows={2}
+              className="w-full px-3 py-2 rounded-lg text-sm outline-none resize-none"
+              style={inputStyle}
+            />
           </div>
 
           {/* Editor */}
