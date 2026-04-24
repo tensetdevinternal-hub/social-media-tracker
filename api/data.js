@@ -27,7 +27,8 @@ export default async function handler(req, res) {
       const latest = blobs.sort(
         (a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt)
       )[0];
-      const r = await fetch(latest.url);
+      const r = await fetch(latest.downloadUrl);
+      if (!r.ok) throw new Error(`Blob fetch failed: ${r.status}`);
       const data = await r.json();
       return res.json(data);
     } catch {
@@ -46,7 +47,7 @@ export default async function handler(req, res) {
       if (blobs.length) await Promise.all(blobs.map(b => del(b.url)));
 
       await put(BLOB_PATH, json, {
-        access: 'public',
+        access: 'private',
         contentType: 'application/json',
         addRandomSuffix: false,
       });
