@@ -28,7 +28,7 @@ export default async function handler(req, res) {
       const { blobs } = await list({ prefix: BLOB_PATH });
       if (!blobs.length) return res.json({ platforms: [], posts: {}, _debug: 'no blobs' });
       const latest = blobs.sort((a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt))[0];
-      const r = await fetch(latest.downloadUrl);
+      const r = await fetch(latest.url);
       if (!r.ok) return res.json({ platforms: [], posts: {}, _error: `fetch ${r.status}` });
       const data = await r.json();
       return res.json(data);
@@ -46,7 +46,7 @@ export default async function handler(req, res) {
       const { blobs } = await list({ prefix: BLOB_PATH });
       if (blobs.length) await Promise.all(blobs.map(b => del(b.url)));
       const result = await put(BLOB_PATH, json, {
-        access: 'private',
+        access: 'public',
         contentType: 'application/json',
         addRandomSuffix: false,
       });
