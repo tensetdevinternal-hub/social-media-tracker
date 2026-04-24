@@ -19,42 +19,40 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
-  // ── GET: return current data ────────────────────────────────────────────────
+  const hasToken = !!process.env.BLOB_READ_WRITE_TOKEN;
+
+  // ── GET ─────────────────────────────────────────────────────────────────────
   if (req.method === 'GET') {
+    if (!hasToken) return res.json({ platforms: [], posts: {}, _error: 'BLOB_READ_WRITE_TOKEN missing' });
     try {
       const { blobs } = await list({ prefix: BLOB_PATH });
-      if (!blobs.length) return res.json({ platforms: [], posts: {} });
-      const latest = blobs.sort(
-        (a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt)
-      )[0];
+      if (!blobs.length) return res.json({ platforms: [], posts: {}, _debug: 'no blobs' });
+      const latest = blobs.sort((a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt))[0];
       const r = await fetch(latest.downloadUrl);
-      if (!r.ok) throw new Error(`Blob fetch failed: ${r.status}`);
+      if (!r.ok) return res.json({ platforms: [], posts: {}, _error: `fetch ${r.status}` });
       const data = await r.json();
       return res.json(data);
-    } catch {
-      return res.json({ platforms: [], posts: {} });
+    } catch (e) {
+      return res.json({ platforms: [], posts: {}, _error: e.message });
     }
   }
 
-  // ── POST: save new data ─────────────────────────────────────────────────────
+  // ── POST ────────────────────────────────────────────────────────────────────
   if (req.method === 'POST') {
+    if (!hasToken) return res.status(500).json({ error: 'BLOB_READ_WRITE_TOKEN missing' });
     try {
       const body = await readBody(req);
       const json = JSON.stringify(body);
-
-      // Delete old blobs, then write fresh
       const { blobs } = await list({ prefix: BLOB_PATH });
       if (blobs.length) await Promise.all(blobs.map(b => del(b.url)));
-
-      await put(BLOB_PATH, json, {
+      const result = await put(BLOB_PATH, json, {
         access: 'private',
         contentType: 'application/json',
         addRandomSuffix: false,
       });
-      return res.json({ ok: true });
+      return res.json({ ok: true, url: result.url });
     } catch (e) {
-      console.error('Blob write error:', e);
-      return res.status(500).json({ error: 'Failed to save data' });
+      return res.status(500).json({ error: e.message });
     }
   }
 
