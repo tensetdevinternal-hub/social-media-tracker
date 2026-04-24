@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { useLocalStorage } from './hooks/useLocalStorage';
+import { useSharedData } from './hooks/useSharedData';
 import { useCalendarNavigation } from './hooks/useCalendarNavigation';
 import { getWeekDates, formatDate } from './utils/dateUtils';
 import { generateId } from './utils/idGenerator';
@@ -35,7 +35,7 @@ const DEFAULT_DATA = {
 // ─── Root component ───────────────────────────────────────────────────────────
 export default function App() {
   // Persistent data
-  const [data, setData] = useLocalStorage('contentCalendarDataV2', DEFAULT_DATA);
+  const [data, setData] = useSharedData(DEFAULT_DATA);
 
   // Calendar navigation
   const { currentDate, goToPrev, goToNext, goToToday } = useCalendarNavigation();
