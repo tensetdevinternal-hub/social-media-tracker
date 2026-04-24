@@ -17,7 +17,8 @@ export function useSharedData(initialValue) {
   const saveTimer = useRef(null);
 
   function applyServerData(d) {
-    if (d && Array.isArray(d.platforms)) {
+    // Only apply server data if it actually has content — never overwrite with empty
+    if (d && Array.isArray(d.platforms) && d.platforms.length > 0) {
       setData(d);
       localStorage.setItem(LOCAL_KEY, JSON.stringify(d));
     }
