@@ -66,12 +66,12 @@ export default function PostCard({ post, cellKey, onClick, viewMode, colors }) {
       {/* Status dots */}
       <div className="flex items-center gap-1 mb-1">
         <span
-          className="w-2 h-2 rounded-full inline-block shrink-0"
+          className="w-2.5 h-2.5 rounded-full inline-block shrink-0"
           style={{ backgroundColor: captionCfg.color }}
           title={`Caption: ${captionCfg.label}`}
         />
         <span
-          className="w-2 h-2 rounded-full inline-block shrink-0"
+          className="w-2.5 h-2.5 rounded-full inline-block shrink-0"
           style={{ backgroundColor: mediaCfg.color }}
           title={`Media: ${mediaCfg.label}`}
         />

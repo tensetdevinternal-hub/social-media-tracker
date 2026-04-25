@@ -118,6 +118,31 @@ export default function CalendarGrid({
             </div>
           )}
 
+          {/* Status legend — top of grid */}
+          {platforms.length > 0 && (
+            <div
+              className="flex items-center gap-4 px-4 py-1.5 border-b"
+              style={{
+                borderColor: colors.borderLight,
+                backgroundColor: colors.cardBg,
+              }}
+            >
+              <span className="text-[10px] uppercase tracking-wider" style={{ color: colors.textFaint }}>Status</span>
+              {[
+                { color: '#6b7280', label: 'Not Started' },
+                { color: '#f59e0b', label: 'Draft' },
+                { color: '#3b82f6', label: 'Confirmed' },
+                { color: '#10b981', label: 'Posted' },
+              ].map(({ color, label }) => (
+                <div key={label} className="flex items-center gap-1.5">
+                  <span className="w-2.5 h-2.5 rounded-full inline-block shrink-0" style={{ backgroundColor: color }} />
+                  <span className="text-[10px]" style={{ color: colors.textFaint }}>{label}</span>
+                </div>
+              ))}
+              <span className="text-[10px] ml-1" style={{ color: colors.textFaint }}>Caption · Media</span>
+            </div>
+          )}
+
           {platforms.map((platform) => (
             <PlatformRow
               key={platform.id}
@@ -141,25 +166,6 @@ export default function CalendarGrid({
             />
           ))}
 
-          {/* Status legend */}
-          <div
-            className="flex items-center gap-4 px-4 py-3 border-t mt-2"
-            style={{ borderColor: colors.borderLight }}
-          >
-            <span className="text-[10px] uppercase tracking-wider" style={{ color: colors.textFaint }}>Status</span>
-            {[
-              { color: '#6b7280', label: 'Not Started' },
-              { color: '#f59e0b', label: 'Draft' },
-              { color: '#3b82f6', label: 'Confirmed' },
-              { color: '#10b981', label: 'Posted' },
-            ].map(({ color, label }) => (
-              <div key={label} className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full inline-block" style={{ backgroundColor: color }} />
-                <span className="text-[10px]" style={{ color: colors.textFaint }}>{label}</span>
-              </div>
-            ))}
-            <span className="text-[10px] ml-2" style={{ color: colors.textFaint }}>Caption · Media</span>
-          </div>
         </div>
 
         {/* Zoom controls — sticky bottom-right */}

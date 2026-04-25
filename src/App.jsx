@@ -49,6 +49,14 @@ export default function App() {
   const [editingPost, setEditingPost] = useState(null);    // { post, cellKey, platformName }
   const [showAddModal, setShowAddModal] = useState(null);  // 'platform' | 'account' | null
 
+  // Toast state
+  const [toast, setToast] = useState(null); // { message, type }
+
+  const showToast = (message, type = 'success') => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 3000);
+  };
+
   // Filter state
   const [filterText, setFilterText] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
@@ -128,11 +136,13 @@ export default function App() {
   const handleAddPost = (cellKey) => {
     // Find the platform for this cell
     const accountId = cellKey.slice(0, -(11));
+    const postDate = cellKey.slice(-10);
     const platform = data.platforms.find((p) =>
       p.accounts.some((a) => a.id === accountId)
     );
     if (!platform) return;
     const platformConfig = PLATFORMS[platform.name] || {};
+    const account = platform.accounts.find((a) => a.id === accountId);
 
     const newPost = {
       id: generateId(),
@@ -145,15 +155,17 @@ export default function App() {
         : { content: '', mediaLink: '' }),
     };
 
-    setEditingPost({ post: newPost, cellKey, platformName: platform.name, isNew: true });
+    setEditingPost({ post: newPost, cellKey, platformName: platform.name, isNew: true, accountName: account?.name || '', postDate });
   };
 
   const handleEditPost = (post, cellKey) => {
     const accountId = cellKey.slice(0, -(11));
+    const postDate = cellKey.slice(-10);
     const platform = data.platforms.find((p) =>
       p.accounts.some((a) => a.id === accountId)
     );
-    setEditingPost({ post, cellKey, platformName: platform?.name || '', isNew: false });
+    const account = data.platforms.flatMap((p) => p.accounts).find((a) => a.id === accountId);
+    setEditingPost({ post, cellKey, platformName: platform?.name || '', isNew: false, accountName: account?.name || '', postDate });
   };
 
   const handleSavePost = (updatedPost) => {
@@ -174,6 +186,7 @@ export default function App() {
       };
     });
     setEditingPost(null);
+    showToast('Post saved');
   };
 
   const handleDeletePost = (postId) => {
@@ -191,6 +204,7 @@ export default function App() {
       return { ...prev, posts: newPosts };
     });
     setEditingPost(null);
+    showToast('Post deleted', 'error');
   };
 
   const handleDuplicatePost = (copyPost, targetAccountId, targetDate) => {
@@ -373,6 +387,8 @@ export default function App() {
         <PostModal
           post={editingPost.post}
           platformName={editingPost.platformName}
+          accountName={editingPost.accountName}
+          postDate={editingPost.postDate}
           allAccounts={allAccounts}
           onSave={handleSavePost}
           onDelete={handleDeletePost}
@@ -399,6 +415,30 @@ export default function App() {
           onClose={() => setShowAddModal(null)}
           colors={COLORS}
         />
+      )}
+
+      {/* Toast */}
+      {toast && (
+        <div
+          style={{
+            position: 'fixed',
+            bottom: 24,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 1000,
+            backgroundColor: toast.type === 'error' ? '#450a0a' : '#052e16',
+            border: `1px solid ${toast.type === 'error' ? '#ef4444' : '#10b981'}`,
+            color: toast.type === 'error' ? '#ef4444' : '#10b981',
+            padding: '8px 16px',
+            borderRadius: 8,
+            fontSize: 13,
+            fontWeight: 500,
+            boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
+            pointerEvents: 'none',
+          }}
+        >
+          {toast.message}
+        </div>
       )}
     </div>
   );

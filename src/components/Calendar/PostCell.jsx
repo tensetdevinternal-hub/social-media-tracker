@@ -1,7 +1,7 @@
 import { useDroppable } from '@dnd-kit/core';
 import PostCard from '../Posts/PostCard';
 
-export default function PostCell({ cellKey, posts, onAddPost, onEditPost, viewMode, isToday, columnWidth, rowHeight, colors }) {
+export default function PostCell({ cellKey, posts, onAddPost, onEditPost, viewMode, isToday, isPast, columnWidth, rowHeight, colors }) {
   const { setNodeRef, isOver } = useDroppable({ id: cellKey });
 
   return (
@@ -15,7 +15,10 @@ export default function PostCell({ cellKey, posts, onAddPost, onEditPost, viewMo
           ? 'rgba(59,130,246,0.1)'
           : isToday
           ? 'rgba(59,130,246,0.04)'
+          : isPast
+          ? 'rgba(0,0,0,0.15)'
           : 'transparent',
+        opacity: isPast ? 0.7 : 1,
         borderColor: colors.borderLight,
         outline: isOver ? '2px solid rgba(59,130,246,0.4)' : 'none',
         outlineOffset: '-2px',

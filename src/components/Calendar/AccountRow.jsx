@@ -70,6 +70,7 @@ export default function AccountRow({
             onEditPost={onEditPost}
             viewMode={viewMode}
             isToday={dateKey === today}
+            isPast={dateKey < today}
             columnWidth={columnWidth}
             rowHeight={rowHeight}
             colors={colors}

@@ -29,6 +29,7 @@ export default function DateHeader({ dates, columnWidth, onColumnResizeStart, co
       {dates.map((date) => {
         const key = formatDate(date);
         const isToday = key === today;
+        const isPast = key < today;
         const { day, date: dateNum, month } = formatDisplayDate(date);
 
         return (
@@ -37,25 +38,36 @@ export default function DateHeader({ dates, columnWidth, onColumnResizeStart, co
             className="shrink-0 flex flex-col items-center justify-center py-2 border-r border-b relative"
             style={{
               width: columnWidth,
-              backgroundColor: isToday ? 'rgba(59,130,246,0.1)' : colors.cardBg,
+              backgroundColor: isToday ? 'rgba(59,130,246,0.12)' : colors.cardBg,
               borderColor: colors.border,
+              borderBottom: isToday ? '2px solid #3b82f6' : undefined,
             }}
           >
             <span
               className="text-[10px] uppercase tracking-wider font-medium"
-              style={{ color: isToday ? '#3b82f6' : colors.textFaint }}
+              style={{
+                color: isToday ? '#3b82f6' : colors.textFaint,
+                opacity: !isToday && isPast ? 0.4 : 1,
+              }}
             >
               {day}
             </span>
             <span
               className="text-lg font-semibold leading-tight"
-              style={{ color: isToday ? '#3b82f6' : colors.text, fontFamily: 'JetBrains Mono, monospace' }}
+              style={{
+                color: isToday ? '#3b82f6' : colors.text,
+                fontFamily: 'JetBrains Mono, monospace',
+                opacity: !isToday && isPast ? 0.4 : 1,
+              }}
             >
               {dateNum}
             </span>
             <span
               className="text-[10px]"
-              style={{ color: isToday ? '#3b82f6' : colors.textFaint }}
+              style={{
+                color: isToday ? '#3b82f6' : colors.textFaint,
+                opacity: !isToday && isPast ? 0.4 : 1,
+              }}
             >
               {month}
             </span>

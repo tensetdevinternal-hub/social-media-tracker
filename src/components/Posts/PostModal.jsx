@@ -7,7 +7,7 @@ import TwitterEditor from './TwitterEditor';
 import StandardEditor from './StandardEditor';
 import TwitterPreview from './TwitterPreview';
 
-export default function PostModal({ post, platformName, allAccounts, onSave, onDelete, onDuplicate, onClose, colors }) {
+export default function PostModal({ post, platformName, accountName, postDate, allAccounts, onSave, onDelete, onDuplicate, onClose, colors }) {
   const platformConfig = PLATFORMS[platformName] || {};
   const isTwitter = platformConfig.type === 'twitter';
 
@@ -99,6 +99,8 @@ export default function PostModal({ post, platformName, allAccounts, onSave, onD
             <div>
               <span className="text-xs font-medium" style={{ color: colors.textMuted }}>{platformName}</span>
               <p className="text-xs" style={{ color: colors.textFaint }}>
+                {accountName && <span>{accountName} · </span>}
+                {postDate && <span>{postDate} · </span>}
                 {isTwitter ? 'Thread Editor' : 'Post Editor'}
               </p>
             </div>
