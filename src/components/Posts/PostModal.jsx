@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { STATUSES, STATUS_KEYS } from '../../constants/statuses';
 import { PLATFORMS } from '../../constants/platforms';
-import { formatDate } from '../../utils/dateUtils';
+import { formatDate, formatPostDate } from '../../utils/dateUtils';
 import { generateId } from '../../utils/idGenerator';
 import TwitterEditor from './TwitterEditor';
 import StandardEditor from './StandardEditor';
@@ -20,6 +20,7 @@ export default function PostModal({ post, platformName, accountName, postDate, a
   const [mediaLink, setMediaLink] = useState(post.mediaLink || '');
   const [xPostLink, setXPostLink] = useState(post.xPostLink || '');
   const [titleError, setTitleError] = useState(false);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
 
   // Preview state
   const [showPreview, setShowPreview] = useState(false);
@@ -100,7 +101,7 @@ export default function PostModal({ post, platformName, accountName, postDate, a
               <span className="text-xs font-medium" style={{ color: colors.textMuted }}>{platformName}</span>
               <p className="text-xs" style={{ color: colors.textFaint }}>
                 {accountName && <span>{accountName} · </span>}
-                {postDate && <span>{postDate} · </span>}
+                {postDate && <span>{formatPostDate(postDate)} · </span>}
                 {isTwitter ? 'Thread Editor' : 'Post Editor'}
               </p>
             </div>
@@ -282,13 +283,33 @@ export default function PostModal({ post, platformName, accountName, postDate, a
           style={{ borderColor: colors.borderLight }}
         >
           <div className="flex items-center gap-2">
-            <button
-              onClick={() => { if (window.confirm('Delete this post?')) onDelete(post.id); }}
-              className="px-3 py-1.5 rounded-lg text-xs font-medium transition-colors hover:opacity-80"
-              style={{ backgroundColor: '#450a0a', color: '#ef4444' }}
-            >
-              Delete
-            </button>
+            {confirmingDelete ? (
+              <div className="flex items-center gap-2">
+                <span className="text-xs" style={{ color: colors.textMuted }}>Delete this post?</span>
+                <button
+                  onClick={() => setConfirmingDelete(false)}
+                  className="px-3 py-1.5 rounded-lg text-xs transition-colors hover:opacity-80"
+                  style={{ backgroundColor: colors.buttonBg, color: colors.textMuted }}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => onDelete(post.id)}
+                  className="px-3 py-1.5 rounded-lg text-xs font-medium transition-colors hover:opacity-80"
+                  style={{ backgroundColor: '#450a0a', color: '#ef4444' }}
+                >
+                  Delete
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => setConfirmingDelete(true)}
+                className="px-3 py-1.5 rounded-lg text-xs font-medium transition-colors hover:opacity-80"
+                style={{ backgroundColor: '#450a0a', color: '#ef4444' }}
+              >
+                Delete
+              </button>
+            )}
             <button
               onClick={() => setShowDuplicatePanel(!showDuplicatePanel)}
               className="px-3 py-1.5 rounded-lg text-xs font-medium transition-colors hover:opacity-80"

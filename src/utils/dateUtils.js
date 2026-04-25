@@ -55,3 +55,12 @@ export function formatWeekRange(dates) {
   const lastStr = `${MONTH_NAMES[last.getMonth()]} ${last.getDate()}, ${last.getFullYear()}`;
   return `${firstStr} – ${lastStr}`;
 }
+
+/**
+ * Formats a YYYY-MM-DD string as "Apr 25, 2026" for display.
+ */
+export function formatPostDate(dateStr) {
+  if (!dateStr) return '';
+  const [y, m, d] = dateStr.split('-').map(Number);
+  return `${MONTH_NAMES[m - 1]} ${d}, ${y}`;
+}

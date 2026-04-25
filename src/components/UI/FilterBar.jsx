@@ -22,11 +22,10 @@ export default function FilterBar({ filterText, filterStatus, filterPlatform, on
     >
       {/* Search input */}
       <div className="relative flex-1 min-w-[180px] max-w-xs">
-        <span
-          className="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs pointer-events-none"
-          style={{ color: colors.textFaint }}
-        >
-          🔍
+        <span className="absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: colors.textFaint }}>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+          </svg>
         </span>
         <input
           type="text"

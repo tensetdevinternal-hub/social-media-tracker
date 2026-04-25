@@ -17,6 +17,10 @@ export default function PostCard({ post, cellKey, onClick, viewMode, colors }) {
     ? { transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`, zIndex: 999 }
     : undefined;
 
+  const today = new Date().toISOString().slice(0, 10);
+  const dateKey = cellKey.slice(-10);
+  const isOverdue = dateKey < today && post.captionStatus !== 'posted';
+
   const captionCfg = STATUSES[post.captionStatus] || STATUSES.not_started;
   const mediaCfg = STATUSES[post.mediaStatus] || STATUSES.not_started;
   const unresolvedComments = (post.comments || []).filter((c) => !c.resolved).length;
@@ -57,12 +61,19 @@ export default function PostCard({ post, cellKey, onClick, viewMode, colors }) {
         ...style,
         opacity: isDragging ? 0.4 : 1,
         backgroundColor: colors.cellBg,
-        border: `1px solid ${isDragging ? '#3b82f6' : colors.borderLight}`,
+        border: `1px solid ${isDragging ? '#3b82f6' : isOverdue ? '#d97706' : colors.borderLight}`,
         cursor: isDragging ? 'grabbing' : 'grab',
         touchAction: 'none',
       }}
       className="rounded-lg p-2 relative select-none hover:border-gray-500 transition-colors"
     >
+      {/* Overdue badge */}
+      {isOverdue && (
+        <span className="text-[9px] font-medium px-1 py-0.5 rounded mb-0.5 inline-block" style={{ backgroundColor: '#78350f', color: '#f59e0b' }}>
+          overdue
+        </span>
+      )}
+
       {/* Status dots */}
       <div className="flex items-center gap-1 mb-1">
         <span
@@ -105,8 +116,12 @@ export default function PostCard({ post, cellKey, onClick, viewMode, colors }) {
 
       {/* Thread indicator */}
       {post.tweets && post.tweets.length > 1 && viewMode === 'title' && (
-        <span className="text-[10px]" style={{ color: '#1da1f2' }}>
-          🧵 {post.tweets.length} tweets
+        <span className="flex items-center gap-1 text-[10px] font-medium" style={{ color: '#1da1f2' }}>
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+          </svg>
+          {post.tweets.length} tweets
         </span>
       )}
     </div>
