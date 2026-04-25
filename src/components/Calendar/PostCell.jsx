@@ -7,10 +7,10 @@ export default function PostCell({ cellKey, posts, onAddPost, onEditPost, viewMo
   return (
     <div
       ref={setNodeRef}
-      className="shrink-0 border-r border-b flex flex-col gap-1 p-1 transition-colors group overflow-y-auto"
+      className="shrink-0 border-r border-b flex flex-col gap-1 p-1 transition-colors group"
       style={{
         width: columnWidth,
-        height: rowHeight,
+        minHeight: rowHeight,
         backgroundColor: isOver
           ? 'rgba(59,130,246,0.1)'
           : isToday

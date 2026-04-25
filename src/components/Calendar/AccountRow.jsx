@@ -27,7 +27,7 @@ export default function AccountRow({
         className="shrink-0 flex items-center justify-between px-3 border-r border-b"
         style={{
           width: FROZEN_WIDTH,
-          height: rowHeight,
+          minHeight: rowHeight,
           backgroundColor: colors.cardBg,
           borderColor: colors.borderLight,
           position: 'sticky',
