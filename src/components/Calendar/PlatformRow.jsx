@@ -1,4 +1,5 @@
 import { PLATFORMS } from '../../constants/platforms';
+import { formatDate } from '../../utils/dateUtils';
 import AccountRow from './AccountRow';
 
 const FROZEN_WIDTH = 160;
@@ -44,6 +45,7 @@ export default function PlatformRow({
   onRowResizeStart,
   viewMode,
   colors,
+  launchDays,
 }) {
   const platformConfig = PLATFORMS[platform.name] || {};
 
@@ -90,17 +92,23 @@ export default function PlatformRow({
         </div>
 
         {/* Platform header spacer cells */}
-        {dates.map((date) => (
-          <div
-            key={date.toISOString()}
-            className="shrink-0 border-r border-b py-2"
-            style={{
-              width: columnWidth,
-              backgroundColor: `${platformConfig.color || '#666'}1a`,
-              borderColor: colors.borderLight,
-            }}
-          />
-        ))}
+        {dates.map((date) => {
+          const dateKey = formatDate(date);
+          const isLaunchDay = (launchDays || []).includes(dateKey);
+          return (
+            <div
+              key={date.toISOString()}
+              className="shrink-0 border-r border-b py-2"
+              style={{
+                width: columnWidth,
+                backgroundColor: isLaunchDay
+                  ? 'rgba(139, 92, 246, 0.12)'
+                  : `${platformConfig.color || '#666'}1a`,
+                borderColor: colors.borderLight,
+              }}
+            />
+          );
+        })}
       </div>
 
       {/* Account rows */}
@@ -121,6 +129,7 @@ export default function PlatformRow({
             onRowResizeStart={onRowResizeStart}
             viewMode={viewMode}
             colors={colors}
+            launchDays={launchDays}
           />
         ))}
     </div>

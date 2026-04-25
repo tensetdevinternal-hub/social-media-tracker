@@ -2,7 +2,7 @@ import { formatDate, formatDisplayDate } from '../../utils/dateUtils';
 
 const FROZEN_WIDTH = 160;
 
-export default function DateHeader({ dates, columnWidth, onColumnResizeStart, colors }) {
+export default function DateHeader({ dates, columnWidth, onColumnResizeStart, colors, launchDays, onToggleLaunchDay }) {
   const today = formatDate(new Date());
 
   return (
@@ -30,24 +30,34 @@ export default function DateHeader({ dates, columnWidth, onColumnResizeStart, co
         const key = formatDate(date);
         const isToday = key === today;
         const isPast = key < today;
+        const isLaunchDay = (launchDays || []).includes(key);
         const { day, date: dateNum, month } = formatDisplayDate(date);
 
         return (
           <div
             key={key}
-            className="shrink-0 flex flex-col items-center justify-center py-2 border-r border-b relative"
+            className="shrink-0 flex flex-col items-center justify-center py-2 border-r border-b relative group"
             style={{
               width: columnWidth,
-              backgroundColor: isToday ? 'rgba(59,130,246,0.12)' : colors.cardBg,
+              backgroundColor: isLaunchDay
+                ? 'rgba(139, 92, 246, 0.2)'
+                : isToday
+                ? 'rgba(59,130,246,0.12)'
+                : colors.cardBg,
               borderColor: colors.border,
-              borderBottom: isToday ? '2px solid #3b82f6' : undefined,
+              borderBottom: isLaunchDay
+                ? '2px solid #8b5cf6'
+                : isToday
+                ? '2px solid #3b82f6'
+                : undefined,
+              position: 'relative',
             }}
           >
             <span
               className="text-[10px] uppercase tracking-wider font-medium"
               style={{
-                color: isToday ? '#3b82f6' : colors.textFaint,
-                opacity: !isToday && isPast ? 0.4 : 1,
+                color: isLaunchDay ? '#8b5cf6' : isToday ? '#3b82f6' : colors.textFaint,
+                opacity: !isToday && !isLaunchDay && isPast ? 0.4 : 1,
               }}
             >
               {day}
@@ -55,9 +65,9 @@ export default function DateHeader({ dates, columnWidth, onColumnResizeStart, co
             <span
               className="text-lg font-semibold leading-tight"
               style={{
-                color: isToday ? '#3b82f6' : colors.text,
+                color: isLaunchDay ? '#8b5cf6' : isToday ? '#3b82f6' : colors.text,
                 fontFamily: 'JetBrains Mono, monospace',
-                opacity: !isToday && isPast ? 0.4 : 1,
+                opacity: !isToday && !isLaunchDay && isPast ? 0.4 : 1,
               }}
             >
               {dateNum}
@@ -65,12 +75,46 @@ export default function DateHeader({ dates, columnWidth, onColumnResizeStart, co
             <span
               className="text-[10px]"
               style={{
-                color: isToday ? '#3b82f6' : colors.textFaint,
-                opacity: !isToday && isPast ? 0.4 : 1,
+                color: isLaunchDay ? '#8b5cf6' : isToday ? '#3b82f6' : colors.textFaint,
+                opacity: !isToday && !isLaunchDay && isPast ? 0.4 : 1,
               }}
             >
               {month}
             </span>
+
+            {/* Launch badge */}
+            {isLaunchDay && (
+              <span
+                className="text-[8px] font-bold uppercase tracking-widest mt-0.5"
+                style={{ color: '#8b5cf6', letterSpacing: '0.1em' }}
+              >
+                Launch
+              </span>
+            )}
+
+            {/* Launch day toggle flag button */}
+            <button
+              onClick={(e) => { e.stopPropagation(); onToggleLaunchDay(key); }}
+              title={isLaunchDay ? 'Remove launch day' : 'Mark as launch day'}
+              className={isLaunchDay ? '' : 'opacity-0 group-hover:opacity-100'}
+              style={{
+                position: 'absolute',
+                top: 4,
+                right: 6,
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                padding: 0,
+                color: isLaunchDay ? '#8b5cf6' : 'rgba(139,92,246,0.5)',
+                transition: 'opacity 0.15s',
+                lineHeight: 1,
+              }}
+            >
+              <svg width="11" height="11" viewBox="0 0 24 24" fill={isLaunchDay ? '#8b5cf6' : 'none'} stroke="#8b5cf6" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/>
+                <line x1="4" y1="22" x2="4" y2="15"/>
+              </svg>
+            </button>
 
             {/* Column resize handle — right edge */}
             <div

@@ -31,6 +31,7 @@ const COLORS = {
 const DEFAULT_DATA = {
   platforms: [],
   posts: {},
+  launchDays: [],
 };
 
 // ─── Root component ───────────────────────────────────────────────────────────
@@ -328,6 +329,17 @@ export default function App() {
     setCollapsedPlatforms((prev) => ({ ...prev, [platformId]: !prev[platformId] }));
   };
 
+  const handleToggleLaunchDay = (dateStr) => {
+    setData((prev) => {
+      const current = prev.launchDays || [];
+      const exists = current.includes(dateStr);
+      return {
+        ...prev,
+        launchDays: exists ? current.filter((d) => d !== dateStr) : [...current, dateStr],
+      };
+    });
+  };
+
   return (
     <div
       className="h-screen flex flex-col overflow-hidden"
@@ -405,6 +417,8 @@ export default function App() {
           onDeletePlatform={handleDeletePlatform}
           onDeleteAccount={handleDeleteAccount}
           colors={COLORS}
+          launchDays={data.launchDays || []}
+          onToggleLaunchDay={handleToggleLaunchDay}
         />
       )}
 

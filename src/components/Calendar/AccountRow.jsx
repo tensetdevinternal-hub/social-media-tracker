@@ -17,6 +17,7 @@ export default function AccountRow({
   onRowResizeStart,
   viewMode,
   colors,
+  launchDays,
 }) {
   const today = formatDate(new Date());
 
@@ -60,6 +61,7 @@ export default function AccountRow({
         const displayPosts = hasFilter
           ? allPosts.filter((p) => filteredPostIds.has(p.id))
           : allPosts;
+        const isLaunchDay = (launchDays || []).includes(dateKey);
 
         return (
           <PostCell
@@ -74,6 +76,7 @@ export default function AccountRow({
             columnWidth={columnWidth}
             rowHeight={rowHeight}
             colors={colors}
+            isLaunchDay={isLaunchDay}
           />
         );
       })}

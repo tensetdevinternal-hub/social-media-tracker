@@ -26,6 +26,8 @@ export default function CalendarGrid({
   onDeletePlatform,
   onDeleteAccount,
   colors,
+  launchDays,
+  onToggleLaunchDay,
 }) {
   const [activePost, setActivePost] = useState(null);
   const [columnWidth, setColumnWidth] = useState(DEFAULT_COL_WIDTH);
@@ -106,6 +108,8 @@ export default function CalendarGrid({
             columnWidth={effectiveColWidth}
             onColumnResizeStart={handleColumnResizeStart}
             colors={colors}
+            launchDays={launchDays}
+            onToggleLaunchDay={onToggleLaunchDay}
           />
 
           {platforms.length === 0 && (
@@ -163,6 +167,7 @@ export default function CalendarGrid({
               onRowResizeStart={handleRowResizeStart}
               viewMode={viewMode}
               colors={colors}
+              launchDays={launchDays}
             />
           ))}
 
