@@ -18,6 +18,7 @@ export default function PostModal({ post, platformName, allAccounts, onSave, onD
   const [tweets, setTweets] = useState(post.tweets || [{ text: '', mediaLink: '' }]);
   const [content, setContent] = useState(post.content || '');
   const [mediaLink, setMediaLink] = useState(post.mediaLink || '');
+  const [xPostLink, setXPostLink] = useState(post.xPostLink || '');
   const [titleError, setTitleError] = useState(false);
 
   // Preview state
@@ -39,7 +40,7 @@ export default function PostModal({ post, platformName, allAccounts, onSave, onD
       notes,
       captionStatus,
       mediaStatus,
-      ...(isTwitter ? { tweets } : { content, mediaLink }),
+      ...(isTwitter ? { tweets, xPostLink } : { content, mediaLink }),
     };
     onSave(updatedPost);
   };
@@ -160,6 +161,23 @@ export default function PostModal({ post, platformName, allAccounts, onSave, onD
               style={inputStyle}
             />
           </div>
+
+          {/* X Post Link */}
+          {isTwitter && (
+            <div>
+              <label className="block text-xs mb-1 font-medium" style={{ color: colors.textMuted }}>
+                𝕏 Post Link
+              </label>
+              <input
+                type="url"
+                value={xPostLink}
+                onChange={(e) => setXPostLink(e.target.value)}
+                placeholder="https://x.com/..."
+                className="w-full px-3 py-2 rounded-lg text-sm outline-none"
+                style={inputStyle}
+              />
+            </div>
+          )}
 
           {/* Editor */}
           {isTwitter ? (
