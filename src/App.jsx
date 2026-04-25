@@ -233,16 +233,35 @@ export default function App() {
   };
 
   // ─── Drag & drop handler ───────────────────────────────────────────────────
-  const handleDragEnd = ({ postId, sourceCellKey, targetCellKey }) => {
+  const handleDragEnd = ({ postId, sourceCellKey, targetCellKey, insertIndex }) => {
     setData((prev) => {
       const sourceArr = prev.posts[sourceCellKey] || [];
-      const post = sourceArr.find((p) => p.id === postId);
-      if (!post) return prev;
+      const sourceIndex = sourceArr.findIndex((p) => p.id === postId);
+      if (sourceIndex === -1) return prev;
+      const post = sourceArr[sourceIndex];
 
+      const isSameCell = sourceCellKey === targetCellKey;
+
+      if (isSameCell) {
+        // Reorder within the same cell
+        const arr = [...sourceArr];
+        arr.splice(sourceIndex, 1);
+        let idx = insertIndex ?? arr.length;
+        if (sourceIndex < idx) idx--;
+        arr.splice(idx, 0, post);
+        return { ...prev, posts: { ...prev.posts, [sourceCellKey]: arr } };
+      }
+
+      // Cross-cell move
       const newSource = sourceArr.filter((p) => p.id !== postId);
-      const newTarget = [...(prev.posts[targetCellKey] || []), post];
+      const targetArr = [...(prev.posts[targetCellKey] || [])];
+      if (insertIndex != null) {
+        targetArr.splice(insertIndex, 0, post);
+      } else {
+        targetArr.push(post);
+      }
 
-      const newPosts = { ...prev.posts, [targetCellKey]: newTarget };
+      const newPosts = { ...prev.posts, [targetCellKey]: targetArr };
       if (newSource.length === 0) {
         delete newPosts[sourceCellKey];
       } else {

@@ -1,8 +1,51 @@
-import { useDroppable } from '@dnd-kit/core';
+import { Fragment, useState } from 'react';
+import { useDroppable, useDndMonitor } from '@dnd-kit/core';
 import PostCard from '../Posts/PostCard';
+
+function InsertSlot({ id }) {
+  const { setNodeRef, isOver } = useDroppable({ id });
+  return (
+    <div
+      ref={setNodeRef}
+      style={{
+        height: 10,
+        display: 'flex',
+        alignItems: 'center',
+        flexShrink: 0,
+        padding: '0 2px',
+      }}
+    >
+      <div
+        style={{
+          height: isOver ? 3 : 1,
+          width: '100%',
+          backgroundColor: isOver ? '#3b82f6' : 'rgba(59,130,246,0.2)',
+          borderRadius: 2,
+          transition: 'height 0.1s, background-color 0.1s',
+          boxShadow: isOver ? '0 0 6px rgba(59,130,246,0.5)' : 'none',
+        }}
+      />
+    </div>
+  );
+}
 
 export default function PostCell({ cellKey, posts, onAddPost, onEditPost, viewMode, isToday, isPast, columnWidth, rowHeight, colors, isLaunchDay }) {
   const { setNodeRef, isOver } = useDroppable({ id: cellKey });
+  const [isDragging, setIsDragging] = useState(false);
+  const [isAnySlotOver, setIsAnySlotOver] = useState(false);
+
+  useDndMonitor({
+    onDragStart() { setIsDragging(true); },
+    onDragEnd() { setIsDragging(false); setIsAnySlotOver(false); },
+    onDragCancel() { setIsDragging(false); setIsAnySlotOver(false); },
+    onDragOver(event) {
+      const overId = String(event.over?.id ?? '');
+      setIsAnySlotOver(overId.startsWith(`${cellKey}::`));
+    },
+  });
+
+  const showSlots = isDragging && posts.length > 0;
+  const highlightCell = isOver || isAnySlotOver;
 
   return (
     <div
@@ -11,8 +54,8 @@ export default function PostCell({ cellKey, posts, onAddPost, onEditPost, viewMo
       style={{
         width: columnWidth,
         minHeight: rowHeight,
-        backgroundColor: isOver
-          ? 'rgba(59,130,246,0.1)'
+        backgroundColor: highlightCell
+          ? 'rgba(59,130,246,0.08)'
           : isLaunchDay
           ? 'rgba(139, 92, 246, 0.08)'
           : isToday
@@ -22,20 +65,23 @@ export default function PostCell({ cellKey, posts, onAddPost, onEditPost, viewMo
           : 'transparent',
         opacity: isPast && !isLaunchDay ? 0.7 : 1,
         borderColor: colors.borderLight,
-        outline: isOver ? '2px solid rgba(59,130,246,0.4)' : 'none',
+        outline: isOver && posts.length === 0 ? '2px solid rgba(59,130,246,0.4)' : 'none',
         outlineOffset: '-2px',
         boxSizing: 'border-box',
       }}
     >
-      {posts.map((post) => (
-        <PostCard
-          key={post.id}
-          post={post}
-          cellKey={cellKey}
-          onClick={() => onEditPost(post, cellKey)}
-          viewMode={viewMode}
-          colors={colors}
-        />
+      {showSlots && <InsertSlot id={`${cellKey}::0`} />}
+      {posts.map((post, i) => (
+        <Fragment key={post.id}>
+          <PostCard
+            post={post}
+            cellKey={cellKey}
+            onClick={() => onEditPost(post, cellKey)}
+            viewMode={viewMode}
+            colors={colors}
+          />
+          {showSlots && <InsertSlot id={`${cellKey}::${i + 1}`} />}
+        </Fragment>
       ))}
       <button
         onClick={() => onAddPost(cellKey)}

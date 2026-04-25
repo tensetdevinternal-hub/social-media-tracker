@@ -94,9 +94,23 @@ export default function CalendarGrid({
     setActivePost(null);
     if (!over || !active) return;
     const { postId, sourceCellKey } = active.data.current || {};
-    const targetCellKey = over.id;
-    if (!postId || !sourceCellKey || sourceCellKey === targetCellKey) return;
-    onDragEnd({ postId, sourceCellKey, targetCellKey });
+    if (!postId || !sourceCellKey) return;
+
+    const overId = String(over.id);
+    let targetCellKey, insertIndex;
+    if (overId.includes('::')) {
+      const sepIdx = overId.lastIndexOf('::');
+      targetCellKey = overId.slice(0, sepIdx);
+      insertIndex = parseInt(overId.slice(sepIdx + 2), 10);
+    } else {
+      targetCellKey = overId;
+      insertIndex = null;
+    }
+
+    // Same cell with no slot = no movement
+    if (sourceCellKey === targetCellKey && insertIndex === null) return;
+
+    onDragEnd({ postId, sourceCellKey, targetCellKey, insertIndex });
   };
 
   return (
