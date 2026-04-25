@@ -1,10 +1,11 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useSharedData } from './hooks/useSharedData';
 import { useCalendarNavigation } from './hooks/useCalendarNavigation';
 import { getWeekDates, formatDate } from './utils/dateUtils';
 import { generateId } from './utils/idGenerator';
 import { PLATFORMS } from './constants/platforms';
 import CalendarGrid from './components/Calendar/CalendarGrid';
+import ListView from './components/List/ListView';
 import Navigation from './components/UI/Navigation';
 import FilterBar from './components/UI/FilterBar';
 import PostModal from './components/Posts/PostModal';
@@ -43,6 +44,7 @@ export default function App() {
   // UI state
   const [viewMode, setViewMode] = useState('title');
   const [weekSpan, setWeekSpan] = useState(2);
+  const [viewType, setViewType] = useState('calendar'); // 'calendar' | 'list'
   const [collapsedPlatforms, setCollapsedPlatforms] = useState({});
 
   // Modal state
@@ -131,6 +133,17 @@ export default function App() {
     });
     return total - shown;
   }, [data.posts, filteredPostIds]);
+
+  // ─── Keyboard navigation ───────────────────────────────────────────────────
+  useEffect(() => {
+    const handleKey = (e) => {
+      if (editingPost || showAddModal) return; // don't fire when modal is open
+      if (e.key === 'ArrowLeft') goToPrev(weekSpan);
+      if (e.key === 'ArrowRight') goToNext(weekSpan);
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [editingPost, showAddModal, weekSpan, goToPrev, goToNext]);
 
   // ─── Post handlers ─────────────────────────────────────────────────────────
   const handleAddPost = (cellKey) => {
@@ -341,11 +354,13 @@ export default function App() {
         weekDates={weekDates}
         weekSpan={weekSpan}
         viewMode={viewMode}
+        viewType={viewType}
         onPrev={() => goToPrev(weekSpan)}
         onNext={() => goToNext(weekSpan)}
         onToday={goToToday}
         onWeekSpanChange={setWeekSpan}
         onViewModeChange={setViewMode}
+        onViewTypeChange={setViewType}
         onAddPlatform={() => setShowAddModal('platform')}
         onAddAccount={() => setShowAddModal('account')}
         hasPlatforms={data.platforms.length > 0}
@@ -364,23 +379,34 @@ export default function App() {
         colors={COLORS}
       />
 
-      {/* Calendar grid */}
-      <CalendarGrid
-        platforms={data.platforms}
-        dates={weekDates}
-        posts={data.posts}
-        filteredPostIds={filteredPostIds}
-        hasFilter={hasFilter}
-        collapsedPlatforms={collapsedPlatforms}
-        viewMode={viewMode}
-        onToggleCollapse={handleToggleCollapse}
-        onAddPost={handleAddPost}
-        onEditPost={handleEditPost}
-        onDragEnd={handleDragEnd}
-        onDeletePlatform={handleDeletePlatform}
-        onDeleteAccount={handleDeleteAccount}
-        colors={COLORS}
-      />
+      {/* Main view */}
+      {viewType === 'list' ? (
+        <ListView
+          platforms={data.platforms}
+          posts={data.posts}
+          filteredPostIds={filteredPostIds}
+          hasFilter={hasFilter}
+          onEditPost={handleEditPost}
+          colors={COLORS}
+        />
+      ) : (
+        <CalendarGrid
+          platforms={data.platforms}
+          dates={weekDates}
+          posts={data.posts}
+          filteredPostIds={filteredPostIds}
+          hasFilter={hasFilter}
+          collapsedPlatforms={collapsedPlatforms}
+          viewMode={viewMode}
+          onToggleCollapse={handleToggleCollapse}
+          onAddPost={handleAddPost}
+          onEditPost={handleEditPost}
+          onDragEnd={handleDragEnd}
+          onDeletePlatform={handleDeletePlatform}
+          onDeleteAccount={handleDeleteAccount}
+          colors={COLORS}
+        />
+      )}
 
       {/* Post modal */}
       {editingPost && (

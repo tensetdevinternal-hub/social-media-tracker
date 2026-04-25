@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { STATUSES, STATUS_KEYS } from '../../constants/statuses';
 import { PLATFORMS } from '../../constants/platforms';
 import { formatDate, formatPostDate } from '../../utils/dateUtils';
@@ -29,6 +29,20 @@ export default function PostModal({ post, platformName, accountName, postDate, a
   const [showDuplicatePanel, setShowDuplicatePanel] = useState(false);
   const [dupDate, setDupDate] = useState(formatDate(new Date()));
   const [dupAccountId, setDupAccountId] = useState('');
+
+  useEffect(() => {
+    const handleKey = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 's') {
+        e.preventDefault();
+        handleSave();
+      }
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [title, notes, tweets, content, mediaLink, xPostLink, captionStatus, mediaStatus]);
 
   const handleSave = () => {
     if (!title.trim()) {
