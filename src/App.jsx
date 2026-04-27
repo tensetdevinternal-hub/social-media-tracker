@@ -182,22 +182,37 @@ export default function App() {
     setEditingPost({ post, cellKey, platformName: platform?.name || '', isNew: false, accountName: account?.name || '', postDate });
   };
 
-  const handleSavePost = (updatedPost) => {
+  const handleSavePost = (updatedPost, newDate) => {
     if (!editingPost) return;
     const { cellKey, isNew } = editingPost;
+    const accountId = cellKey.slice(0, -11);
+    const newCellKey = newDate ? `${accountId}-${newDate}` : cellKey;
+    const dateChanged = newCellKey !== cellKey;
 
     setData((prev) => {
-      const cellPosts = prev.posts[cellKey] || [];
-      let newCellPosts;
-      if (isNew) {
-        newCellPosts = [...cellPosts, updatedPost];
-      } else {
-        newCellPosts = cellPosts.map((p) => p.id === updatedPost.id ? updatedPost : p);
+      if (!dateChanged) {
+        const cellPosts = prev.posts[cellKey] || [];
+        const newCellPosts = isNew
+          ? [...cellPosts, updatedPost]
+          : cellPosts.map((p) => p.id === updatedPost.id ? updatedPost : p);
+        return {
+          ...prev,
+          posts: { ...prev.posts, [cellKey]: newCellPosts },
+        };
       }
-      return {
-        ...prev,
-        posts: { ...prev.posts, [cellKey]: newCellPosts },
-      };
+
+      // Date changed → move to new cell
+      const newPosts = { ...prev.posts };
+      if (!isNew) {
+        const filtered = (prev.posts[cellKey] || []).filter((p) => p.id !== updatedPost.id);
+        if (filtered.length === 0) {
+          delete newPosts[cellKey];
+        } else {
+          newPosts[cellKey] = filtered;
+        }
+      }
+      newPosts[newCellKey] = [...(newPosts[newCellKey] || []), updatedPost];
+      return { ...prev, posts: newPosts };
     });
     setEditingPost(null);
     showToast('Post saved');
@@ -438,6 +453,8 @@ export default function App() {
           colors={COLORS}
           launchDays={data.launchDays || []}
           onToggleLaunchDay={handleToggleLaunchDay}
+          onPaginatePrev={() => goToPrev(weekSpan)}
+          onPaginateNext={() => goToNext(weekSpan)}
         />
       )}
 

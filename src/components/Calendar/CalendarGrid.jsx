@@ -1,8 +1,9 @@
 import { DndContext, DragOverlay, MouseSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import DateHeader from './DateHeader';
 import PlatformRow from './PlatformRow';
 import PostCard from '../Posts/PostCard';
+import { useDragAutoPaginate } from '../../hooks/useDragAutoPaginate';
 
 const MIN_COL_WIDTH = 80;
 const DEFAULT_COL_WIDTH = 160;
@@ -28,11 +29,14 @@ export default function CalendarGrid({
   colors,
   launchDays,
   onToggleLaunchDay,
+  onPaginatePrev,
+  onPaginateNext,
 }) {
   const [activePost, setActivePost] = useState(null);
   const [columnWidth, setColumnWidth] = useState(DEFAULT_COL_WIDTH);
   const [rowHeights, setRowHeights] = useState({});
   const [zoomIndex, setZoomIndex] = useState(ZOOM_STEPS.length - 1); // start at 100%
+  const scrollContainerRef = useRef(null);
 
   const zoom = ZOOM_STEPS[zoomIndex];
   const effectiveColWidth = Math.max(MIN_COL_WIDTH, Math.round(columnWidth * zoom));
@@ -115,7 +119,12 @@ export default function CalendarGrid({
 
   return (
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-      <div className="relative overflow-auto flex-1" style={{ backgroundColor: colors.bg, fontSize: `${zoom * 100}%` }}>
+      <DragAutoPaginate
+        containerRef={scrollContainerRef}
+        onPaginatePrev={onPaginatePrev}
+        onPaginateNext={onPaginateNext}
+      />
+      <div ref={scrollContainerRef} className="relative overflow-auto flex-1" style={{ backgroundColor: colors.bg, fontSize: `${zoom * 100}%` }}>
         <div style={{ minWidth: 'max-content' }}>
           <DateHeader
             dates={dates}
@@ -274,4 +283,9 @@ export default function CalendarGrid({
       </DragOverlay>
     </DndContext>
   );
+}
+
+function DragAutoPaginate({ containerRef, onPaginatePrev, onPaginateNext }) {
+  useDragAutoPaginate({ containerRef, onPaginatePrev, onPaginateNext });
+  return null;
 }

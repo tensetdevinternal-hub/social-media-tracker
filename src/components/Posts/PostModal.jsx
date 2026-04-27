@@ -12,6 +12,7 @@ export default function PostModal({ post, platformName, accountName, postDate, a
   const isTwitter = platformConfig.type === 'twitter';
 
   const [title, setTitle] = useState(post.title || '');
+  const [scheduleDate, setScheduleDate] = useState(postDate || '');
   const [notes, setNotes] = useState(post.notes || '');
   const [captionStatus, setCaptionStatus] = useState(post.captionStatus || 'not_started');
   const [mediaStatus, setMediaStatus] = useState(post.mediaStatus || 'not_started');
@@ -42,7 +43,7 @@ export default function PostModal({ post, platformName, accountName, postDate, a
     };
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
-  }, [title, notes, tweets, content, mediaLink, xPostLink, captionStatus, mediaStatus]);
+  }, [title, scheduleDate, notes, tweets, content, mediaLink, xPostLink, captionStatus, mediaStatus]);
 
   const handleSave = () => {
     if (!title.trim()) {
@@ -57,7 +58,8 @@ export default function PostModal({ post, platformName, accountName, postDate, a
       mediaStatus,
       ...(isTwitter ? { tweets, xPostLink } : { content, mediaLink }),
     };
-    onSave(updatedPost);
+    const finalDate = scheduleDate || postDate;
+    onSave(updatedPost, finalDate);
   };
 
   const handleDuplicateConfirm = () => {
@@ -162,6 +164,23 @@ export default function PostModal({ post, platformName, accountName, postDate, a
             {titleError && (
               <p className="text-[10px] mt-1" style={{ color: '#ef4444' }}>Title is required</p>
             )}
+          </div>
+
+          {/* Date */}
+          <div>
+            <label className="block text-xs mb-1 font-medium" style={{ color: colors.textMuted }}>
+              Date
+            </label>
+            <input
+              type="date"
+              value={scheduleDate}
+              onChange={(e) => setScheduleDate(e.target.value)}
+              className="w-full px-3 py-2 rounded-lg text-sm outline-none"
+              style={{
+                ...inputStyle,
+                colorScheme: 'dark',
+              }}
+            />
           </div>
 
           {/* Notes */}
