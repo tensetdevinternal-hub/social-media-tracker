@@ -1,5 +1,5 @@
 import { DndContext, DragOverlay, MouseSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core';
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import DateHeader from './DateHeader';
 import PlatformRow from './PlatformRow';
 import PostCard from '../Posts/PostCard';
@@ -15,6 +15,7 @@ const ZOOM_STEPS = [0.4, 0.5, 0.6, 0.75, 1.0];
 export default function CalendarGrid({
   platforms,
   dates,
+  focusOffsetDays = 0,
   posts,
   filteredPostIds,
   hasFilter,
@@ -37,10 +38,23 @@ export default function CalendarGrid({
   const [rowHeights, setRowHeights] = useState({});
   const [zoomIndex, setZoomIndex] = useState(ZOOM_STEPS.length - 1); // start at 100%
   const scrollContainerRef = useRef(null);
+  const lastFirstDateRef = useRef(null);
 
   const zoom = ZOOM_STEPS[zoomIndex];
   const effectiveColWidth = Math.max(MIN_COL_WIDTH, Math.round(columnWidth * zoom));
   const effectiveDefaultRowHeight = Math.max(MIN_ROW_HEIGHT, Math.round(DEFAULT_ROW_HEIGHT * zoom));
+
+  // Auto-scroll the focus week to the left edge (right after the sticky label)
+  // when the date range changes — i.e. on mount and on prev/next/today.
+  // Only fires when the first date actually changes, so user scrolling isn't fought.
+  useEffect(() => {
+    const el = scrollContainerRef.current;
+    if (!el || !dates || dates.length === 0) return;
+    const firstKey = dates[0].toISOString();
+    if (lastFirstDateRef.current === firstKey) return;
+    lastFirstDateRef.current = firstKey;
+    el.scrollLeft = focusOffsetDays * effectiveColWidth;
+  }, [dates, focusOffsetDays, effectiveColWidth]);
 
   const zoomOut = () => setZoomIndex((i) => Math.max(0, i - 1));
   const zoomIn  = () => setZoomIndex((i) => Math.min(ZOOM_STEPS.length - 1, i + 1));

@@ -24,6 +24,17 @@ export function getWeekDates(referenceDate, weekSpan = 1) {
 }
 
 /**
+ * Returns an extended Monday-aligned date range: bufferBefore weeks before the
+ * focus, the focus weekSpan itself, and bufferAfter weeks after. Uses
+ * getWeekDates so Monday alignment stays consistent.
+ */
+export function getWeekDatesRange(referenceDate, weekSpan = 1, bufferBefore = 0, bufferAfter = 0) {
+  const start = new Date(referenceDate);
+  start.setDate(start.getDate() - bufferBefore * 7);
+  return getWeekDates(start, bufferBefore + weekSpan + bufferAfter);
+}
+
+/**
  * Format a date as YYYY-MM-DD for use as storage keys.
  */
 export function formatDate(date) {

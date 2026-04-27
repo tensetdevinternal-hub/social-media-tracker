@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useSharedData } from './hooks/useSharedData';
 import { useCalendarNavigation } from './hooks/useCalendarNavigation';
-import { getWeekDates, formatDate } from './utils/dateUtils';
+import { getWeekDates, getWeekDatesRange, formatDate } from './utils/dateUtils';
 import { generateId } from './utils/idGenerator';
 import { PLATFORMS } from './constants/platforms';
 import CalendarGrid from './components/Calendar/CalendarGrid';
@@ -33,6 +33,10 @@ const DEFAULT_DATA = {
   posts: {},
   launchDays: [],
 };
+
+// ─── Calendar buffer (UI-only; lets the user scroll past the focus window) ────
+const BUFFER_WEEKS_BEFORE = 4;
+const BUFFER_WEEKS_AFTER = 4;
 
 // ─── Root component ───────────────────────────────────────────────────────────
 export default function App() {
@@ -67,6 +71,10 @@ export default function App() {
 
   // Computed week dates
   const weekDates = useMemo(() => getWeekDates(currentDate, weekSpan), [currentDate, weekSpan]);
+  const displayDates = useMemo(
+    () => getWeekDatesRange(currentDate, weekSpan, BUFFER_WEEKS_BEFORE, BUFFER_WEEKS_AFTER),
+    [currentDate, weekSpan]
+  );
 
   // ─── Derived: flat list of all accounts with platform info ─────────────────
   const allAccounts = useMemo(() => {
@@ -438,7 +446,8 @@ export default function App() {
       ) : (
         <CalendarGrid
           platforms={data.platforms}
-          dates={weekDates}
+          dates={displayDates}
+          focusOffsetDays={BUFFER_WEEKS_BEFORE * 7}
           posts={data.posts}
           filteredPostIds={filteredPostIds}
           hasFilter={hasFilter}
